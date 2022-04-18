@@ -141,5 +141,4 @@ public class courseData {
         this.evaluationCriteria.put("en", evaluationCriteriaEn.getAsString());
         this.evaluationCriteria.put("fi", evaluationCriteriaFi.getAsString());
     }
-    }
 }

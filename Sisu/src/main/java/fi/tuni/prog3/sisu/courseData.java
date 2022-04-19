@@ -15,7 +15,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-public class courseData {
+public class CourseData {
     private JsonObject courseInObject;
     private String code;
     private String credits;
@@ -26,7 +26,7 @@ public class courseData {
     // key = language, value = description
     private TreeMap<String, String> description;
     // MAYBE key = course name, value = substitution course
-    private TreeMap<String, courseData> substitution;
+    private TreeMap<String, CourseData> substitution;
     // key = language, value = description
     private TreeMap<String, String> evaluationCriteria;
     // key = language, value = description
@@ -41,7 +41,7 @@ public class courseData {
      * @param data[] String array
      * @throws IllegalStateException When there is error reading the file
      */
-    courseData(String[] data) {
+    CourseData(String[] data) {
         createMapInstances();
         /*
         try{

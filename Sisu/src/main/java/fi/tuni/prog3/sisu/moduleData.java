@@ -12,7 +12,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-public class moduleData{
+public class ModuleData{
     private JsonObject moduleJson;
     private String groupId;
     private String targetCredits;
@@ -21,11 +21,17 @@ public class moduleData{
     private TreeMap<String, String> name;
 
     // key = course name, value = courseData
-    private TreeMap<String, courseData> whenSubModuleAreCourses;
+    private TreeMap<String, CourseData> whenSubModuleAreCourses;
     // key = groupingModule id, value = groupingModuleData
-    private TreeMap<String, moduleData> whenSubmoduleAreModules;
+    private TreeMap<String, ModuleData> whenSubmoduleAreModules;
 
-    moduleData(String[] data){
+    /**
+     * Constructor of moduleData class. Construct an module with given json.
+     * Can be ether studyModule or groupingModule
+     * @param data[] String array
+     * @throws IllegalStateException When there is error reading the file
+     */
+    ModuleData(String[] data){
         name = new TreeMap<>();
         whenSubmoduleAreModules = new TreeMap<>();
         
@@ -149,11 +155,11 @@ public class moduleData{
                 for (var module : rule.getAsJsonObject().get("rules").getAsJsonArray()){
                     if (module.getAsJsonObject().has("courseUnitGroupId")){
                         String courseGroupId = module.getAsJsonObject().get("courseUnitGroupId").getAsString();
-                        courseData temp = new courseData(jsonGetter.getCourseByGroupId(courseGroupId));
+                        CourseData temp = new CourseData(jsonGetter.getCourseByGroupId(courseGroupId));
                         this.whenSubModuleAreCourses.put(temp.getGroupId(), temp);
                     } else {
                         String subModuleGroupId = module.getAsJsonObject().get("moduleGroupId").getAsString();
-                        moduleData temp = new moduleData(jsonGetter.getModuleByGroupId(subModuleGroupId));
+                        ModuleData temp = new ModuleData(jsonGetter.getModuleByGroupId(subModuleGroupId));
                         this.whenSubmoduleAreModules.put(temp.getGroupId(), temp);
                     }
                 }
@@ -199,7 +205,7 @@ public class moduleData{
      * key = course groupId, value = courseData object.
      * @return TreeMap<String, courseData> submodules when they are courses
      */
-    public TreeMap<String, courseData> getWhenSubModuleAreCourses() {
+    public TreeMap<String, CourseData> getWhenSubModuleAreCourses() {
         return this.whenSubModuleAreCourses;
     }
     
@@ -209,7 +215,7 @@ public class moduleData{
      * key = module groupId (can be studyModule or groupingModule), value = moduleData object
      * @return TreeMap<String, courseData> submoduels when they are studyModules or groupingModules.
      */
-    public TreeMap<String, moduleData> getWhenSubModuleAreModules() {
+    public TreeMap<String, ModuleData> getWhenSubModuleAreModules() {
         return this.whenSubmoduleAreModules;
     }
 

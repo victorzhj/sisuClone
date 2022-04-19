@@ -75,7 +75,9 @@ public class courseData {
         
     }
 
-    
+    /**
+     * @hidden
+     */
     private void setup(){
         setName();
         setCode();
@@ -88,6 +90,9 @@ public class courseData {
         setContent();
     }
 
+    /**
+     * @hidden
+     */
     private void createMapInstances(){
         this.name = new TreeMap<>();
         this.description = new TreeMap<>();
@@ -98,6 +103,9 @@ public class courseData {
         this.additional = new TreeMap<>();
     }
 
+    /**
+     * @hidden
+     */
     private void setName(){
         JsonElement name = courseInObject.get("name");
         if (!name.isJsonObject()){
@@ -117,6 +125,9 @@ public class courseData {
         this.name.put("fi", nameFi.getAsString());
     }
 
+    /**
+     * @hidden
+     */
     private void setCode(){
         if (courseInObject.get("code").isJsonNull()){
             this.code =  "";
@@ -125,6 +136,9 @@ public class courseData {
         this.code = test.getAsString();
     }
 
+    /**
+     * @hidden
+     */
     private void setCredits(){
         JsonElement creditsAmount = courseInObject.get("credits");
         String minAmount = creditsAmount.getAsJsonObject().get("min").getAsString();
@@ -136,6 +150,9 @@ public class courseData {
         }
     }
 
+    /**
+     * @hidden
+     */
     private void setGroupID(){
         if (courseInObject.get("groupId").isJsonNull()){
             this.groupId =  "";
@@ -143,6 +160,9 @@ public class courseData {
         this.groupId = courseInObject.get("groupId").getAsString();
     }
 
+    /**
+     * @hidden
+     */
     private void setDescription(){
         if (courseInObject.get("completionMethods").isJsonNull()){
             System.out.println("No description1");
@@ -183,6 +203,9 @@ public class courseData {
         this.description.put("fi", descriptionFi.getAsString());
     }
 
+    /**
+     * @hidden
+     */
     private void setEvaluationCriteria(){
         if (courseInObject.get("completionMethods").isJsonNull()){
             System.out.println("No EvaluationCriteria1");
@@ -223,6 +246,9 @@ public class courseData {
         this.evaluationCriteria.put("fi", evaluationCriteriaFi.getAsString());
     }
 
+    /**
+     * @hidden
+     */
     private void setOutcomes(){
         JsonElement outcomes = courseInObject.get("outcomes");
         if (!outcomes.isJsonObject()){
@@ -241,6 +267,9 @@ public class courseData {
         this.outcomes.put("fi", outcomeFi.getAsString());
     }
 
+    /**
+     * @hidden
+     */
     private void setContent(){
         JsonElement content = courseInObject.get("content");
         if (!content.isJsonObject()){
@@ -259,6 +288,9 @@ public class courseData {
         this.content.put("fi", contentFi.getAsString());
     }
 
+    /**
+     * @hidden
+     */
     private void setAdditional(){
         JsonElement additional = courseInObject.get("additional");
         if (!additional.isJsonObject()){

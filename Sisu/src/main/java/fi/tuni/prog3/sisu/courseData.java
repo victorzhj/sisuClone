@@ -67,6 +67,7 @@ public class courseData {
         */
 
         JsonElement courseTree = JsonParser.parseString(json);
+        // check if the json is in correct format
         if (courseTree.isJsonArray()){
             courseInObject = courseTree.getAsJsonArray().get(0).getAsJsonObject();
             setup();
@@ -74,6 +75,7 @@ public class courseData {
         
     }
 
+    
     private void setup(){
         setName();
         setCode();
@@ -275,39 +277,74 @@ public class courseData {
         this.additional.put("fi", additionalFi.getAsString());
     }
 
+    
+    /** 
+     * @return TreeMap<String, String> Key = Language(en or fi), value = name. Returns the course name. 
+     */
     public TreeMap<String, String> getName() {
         return name;
     }
 
 
+    
+    /** 
+     * @return String Returns the course code.
+     */
     public String getCode() {
         return code;
     }
 
+    
+    /** 
+     * @return String Returns the amount of credits you can acquire from the course. Format might be e.g 2-3 or 5
+     */
     public String getCredits() {
         return credits;
     }
 
+    
+    /** 
+     * @return String Returns the course groupId
+     */
     public String getGroupId() {
         return groupId;
     }
 
+    
+    /** 
+     * @return TreeMap<String, String> Key = Language(en or fi), value = description. Returns the course description.
+     */
     public TreeMap<String, String> getDescription() {
         return description;
     }
 
+    
+    /** 
+     * @return TreeMap<String, String> Key = Language(en or fi), value = evaluationCriteria. Returns the course evaluation criteria.
+     */
     public TreeMap<String, String> getEvaluationCriteria() {
         return evaluationCriteria;
     }
 
+    
+    /** 
+     * @return TreeMap<String, String> Key = Language(en or fi), value = outcome text. Returns the course outcome text.
+     */
     public TreeMap<String, String> getOutcomes() {
         return outcomes;
     }
 
+
+    /**
+     * @return TreeMap<String, String> Key = Language(en or fi), value = content text. Returns the course content text.
+     */
     public TreeMap<String, String> getContent() {
         return content;
     }
 
+    /**
+     * @return TreeMap<String, String> Key = Language(en or fi), value = additional text. Returns the course additional text.
+     */
     public TreeMap<String, String> getAdditional() {
         return additional;
     }

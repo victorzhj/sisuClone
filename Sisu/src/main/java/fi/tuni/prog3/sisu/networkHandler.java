@@ -35,35 +35,38 @@ public class networkHandler {
     /** 
      * Searches module by id.
      * @param id Of the module to be searched
-     * @return String Containing data from the request
+     * @return String array containing data from the request and the original id used for search
      */
-    public String getModuleById(String id){
+    public String[] getModuleById(String id){
         HttpRequest req = moduleGet(id);
-        return client.sendAsync(req, BodyHandlers.ofString())
-        .thenApply(HttpResponse::body).join();
+        String[] retValue={client.sendAsync(req, BodyHandlers.ofString())
+            .thenApply(HttpResponse::body).join(), id};
+        return retValue;
     }
 
     
     /** 
      *  Searches module by group-id
      * @param id Of the module to be searched
-     * @return String Containing data from the request
+     * @return String array containing data from the request and the original id used for search
      */
-    public String getModuleByGroupId(String id){
+    public String[] getModuleByGroupId(String id){
         HttpRequest req = moduleIdGet(id);
-        return client.sendAsync(req, BodyHandlers.ofString())
-        .thenApply(HttpResponse::body).join();
+        String[] retValue={client.sendAsync(req, BodyHandlers.ofString())
+            .thenApply(HttpResponse::body).join(), id};
+        return retValue;
     }
     
     /** 
      * Searches course by group-id
      * @param id Of the course to be searched
-     * @return String Containing data from the request
+     * @return String array containing data from the request and the original id used for search
      */
-    public String getCourseByGroupId(String id){
+    public String[] getCourseByGroupId(String id){
         HttpRequest req = courseIdGet(id);
-        return client.sendAsync(req, BodyHandlers.ofString())
-        .thenApply(HttpResponse::body).join();
+        String[] retValue={client.sendAsync(req, BodyHandlers.ofString())
+            .thenApply(HttpResponse::body).join(), id};
+            return retValue;
     }
 
     

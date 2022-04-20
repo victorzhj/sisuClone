@@ -64,22 +64,6 @@ public class ModuleData{
         */
     }
 
-    /*
-    private void setGroupID() {
-        JsonElement groupIdElement = moduleJson.get("groupId");
-        if (!groupIdElement.isJsonPrimitive() || groupIdElement.isJsonNull()){
-            System.out.println("error with studyModule groupid");
-            return;    
-        } else {
-            try {
-                this.groupId = groupIdElement.getAsString();
-            } catch (ClassCastException | IllegalStateException e) {
-                System.out.println("Error with setting studyModule groupID: " + e);
-            }
-        }
-    }
-    */
-
     /**
      * @hidden
      */

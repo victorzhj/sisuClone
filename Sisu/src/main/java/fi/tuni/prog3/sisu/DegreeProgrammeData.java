@@ -6,32 +6,30 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 public class DegreeProgrammeData {
     private JsonObject degreeProgrammeObject;
-    
-
     private String groupId;
     private TreeMap<String, String> name;
     private TreeMap<String, ModuleData> modules;
-
 
     /**
      * Constructor of degreeProgrammeData class. Construct a degree progam with given json.
      * @param data[] String array
      * @throws IllegalStateException When there is error reading the file
      */
-    DegreeProgrammeData(String[] data){
+    public DegreeProgrammeData(String[] data){
         name = new TreeMap<>();
         modules = new TreeMap<>();
         try {
             JsonElement degreeProgrammeTree = JsonParser.parseString(data[0]);
-            if (degreeProgrammeTree.isJsonObject()){
+            if (degreeProgrammeTree.isJsonObject() || !degreeProgrammeTree.isJsonNull()){
                 degreeProgrammeObject = degreeProgrammeTree.getAsJsonObject();
                 this.groupId = data[1];
                 setup();
             }
-        } catch (JsonParseException e){
+        } catch (JsonParseException | IllegalStateException e){
             System.out.format("Error reading the degree programme json %s: ", data[1]);
             System.out.println(e);
         }

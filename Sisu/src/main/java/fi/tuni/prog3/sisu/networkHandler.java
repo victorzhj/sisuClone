@@ -8,7 +8,7 @@ public class networkHandler {
     private static final String tuniId = "universityId=tuni-university-root-id";
     private static final String defaultPeriod = "curriculumPeriodId=uta-lvv-2021";
     private static final String defaultLimit = "limit=1000";
-    private static final String groupIdSearch = "by-group-id?";
+    private static final String groupIdSearch = "by-group-id?groupId=";
     private static final TreeMap<String, String> endpoints = new TreeMap<String,String>();
     private HttpClient client = HttpClient.newHttpClient();
 

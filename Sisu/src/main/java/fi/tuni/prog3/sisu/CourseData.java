@@ -41,7 +41,7 @@ public class CourseData {
      * @param data[] String array
      * @throws IllegalStateException When there is error reading the file
      */
-    CourseData(String[] data) {
+    public CourseData(String[] data) {
         createMapInstances();
         /*
         try{
@@ -234,7 +234,7 @@ public class CourseData {
                 return;
             }
     
-            JsonElement evaluationCriteria = evaluationCriteriaFirst.getAsJsonObject().get("description");
+            JsonElement evaluationCriteria = evaluationCriteriaFirst.getAsJsonObject().get("evaluationCriteria");
             if (!evaluationCriteria.isJsonObject()){
                 System.out.println("Error with course description: " + this.groupId);
                 return;
@@ -407,6 +407,6 @@ public class CourseData {
      */
     @Override
     public String toString(){
-        return String.format("%s : %s : %s", this.code, this.groupId, this.name);
+        return String.format("%s : %s : %s", this.code, this.groupId, this.name.get("fi"));
     }
 }

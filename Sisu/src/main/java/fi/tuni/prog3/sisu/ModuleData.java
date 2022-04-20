@@ -14,6 +14,7 @@ import com.google.gson.JsonSyntaxException;
 
 public class ModuleData{
     private JsonObject moduleJson;
+    private String id;
     private String groupId;
     private String targetCredits;
     private String moduleType;
@@ -31,7 +32,7 @@ public class ModuleData{
      * @param data[] String array
      * @throws IllegalStateException When there is error reading the file
      */
-    ModuleData(String[] data){
+    public ModuleData(String[] data){
         name = new TreeMap<>();
         whenSubmoduleAreModules = new TreeMap<>();
         
@@ -39,7 +40,7 @@ public class ModuleData{
             JsonElement studyModuleTree = JsonParser.parseString(data[0]);
             if (studyModuleTree.isJsonObject()){
                 moduleJson = studyModuleTree.getAsJsonObject();
-                this.groupId = data[1];
+                this.id = data[1];
                 setup();
             }
         } catch (JsonParseException e){
@@ -52,7 +53,7 @@ public class ModuleData{
             JsonElement studyModuleTree = JsonParser.parseString(new String(Files.readAllBytes(Paths.get(json))));//JsonParser.parseString(json);
             if (studyModuleTree.isJsonObject() || !studyModuleTree.isJsonNull()){
                 moduleJson = studyModuleTree.getAsJsonObject();
-                this.groupId = studyModulegroupID;
+                this.id = studyModulegroupID;
                 setup();
             } else {
                 System.out.format("Error reading the studyModule json %s: ", studyModulegroupID);
@@ -68,9 +69,24 @@ public class ModuleData{
      * @hidden
      */
     private void setup(){
+        setGroupId();
         setName();
-        setRules();
+        //setRules();
         setTargetCredits();
+    }
+
+    private void setGroupId() {
+        JsonElement groupIdElement = moduleJson.get("groupId");
+        if (!groupIdElement.isJsonPrimitive() || groupIdElement.isJsonNull()){
+            System.out.println("error with studyModule groupid");
+            return;    
+        } else {
+            try {
+                this.groupId = groupIdElement.getAsString();
+            } catch (ClassCastException | IllegalStateException e) {
+                System.out.println("Error with setting studyModule groupID: " + e);
+            }
+        }
     }
 
     /**
@@ -85,12 +101,12 @@ public class ModuleData{
                 return;
             }
         } catch (ClassCastException | IllegalStateException e) {
-            System.out.println("Error with getting module type: " + this.groupId + " : " + e);
+            System.out.println("Error with getting module type: " + this.id + " : " + e);
         }
         this.moduleType = "StudyModule";
         JsonElement targetCreditsElement = moduleJson.get("targetCredits");
         if (!targetCreditsElement.isJsonObject() || targetCreditsElement.isJsonNull()){
-            System.out.println("error with studyModule targetCredits: " + this.groupId);
+            System.out.println("error with studyModule targetCredits: " + this.id);
             return;    
         } else {
             try {
@@ -102,7 +118,7 @@ public class ModuleData{
                     this.targetCredits = min + "-" + max; 
                 }
             } catch (ClassCastException | IllegalStateException e) {
-                System.out.println("Error with studyModule targetCredits: " + this.groupId + " : " + e);
+                System.out.println("Error with studyModule targetCredits: " + this.id + " : " + e);
             }
         }
     }
@@ -113,14 +129,14 @@ public class ModuleData{
     private void setName(){
         JsonElement nameElement = moduleJson.get("name");
         if (!nameElement.isJsonObject() || nameElement.isJsonNull()){
-            System.out.println("error with studyModule name: " + this.groupId);
+            System.out.println("error with studyModule name: " + this.id);
             return;
         } else {
             try{
                 this.name.put("en", nameElement.getAsJsonObject().get("en").getAsString());
                 this.name.put("fi", nameElement.getAsJsonObject().get("fi").getAsString());
             } catch (ClassCastException | IllegalStateException e) {
-                System.out.println("Error with studyModule name: " + this.groupId + " : " + e);
+                System.out.println("Error with studyModule name: " + this.id + " : " + e);
             }
         }
     }
@@ -131,7 +147,7 @@ public class ModuleData{
     private void setRules(){
         JsonElement rule = moduleJson.get("rule");
         if (!rule.isJsonObject() || rule.isJsonNull()){
-            System.out.println("error with studyModule rules: " + this.groupId);
+            System.out.println("error with studyModule rules: " + this.id);
             return;
         } else {
             try {
@@ -144,19 +160,23 @@ public class ModuleData{
                     } else {
                         String subModuleGroupId = module.getAsJsonObject().get("moduleGroupId").getAsString();
                         ModuleData temp = new ModuleData(jsonGetter.getModuleByGroupId(subModuleGroupId));
-                        this.whenSubmoduleAreModules.put(temp.getGroupId(), temp);
+                        this.whenSubmoduleAreModules.put(temp.getId(), temp);
                     }
                 }
             } catch (ClassCastException | IllegalStateException e) {
-                System.out.println("Error with studyModule rules: " + this.groupId + " : " + e);
+                System.out.println("Error with studyModule rules: " + this.id + " : " + e);
             }
         }
     }
     
     /** 
-     * Return module's groupId
-     * @return String groupId
+     * Return module's id
+     * @return String id
      */
+    public String getId() {
+        return this.id;
+    }
+
     public String getGroupId() {
         return this.groupId;
     }
@@ -186,7 +206,7 @@ public class ModuleData{
     /** 
      * Return module's Courses. 
      * This method leaves it to the user to check if submodules are courses. 
-     * key = course groupId, value = courseData object.
+     * key = course id, value = courseData object.
      * @return TreeMap<String, courseData> submodules when they are courses
      */
     public TreeMap<String, CourseData> getWhenSubModuleAreCourses() {
@@ -196,7 +216,7 @@ public class ModuleData{
     /** 
      * Return's module's submodules when they are studyModules or groupingModules. 
      * This method leaves it to the user to check if submodules are studyModules or groupingModules.
-     * key = module groupId (can be studyModule or groupingModule), value = moduleData object
+     * key = module id (can be studyModule or groupingModule), value = moduleData object
      * @return TreeMap<String, courseData> submoduels when they are studyModules or groupingModules.
      */
     public TreeMap<String, ModuleData> getWhenSubModuleAreModules() {
@@ -217,7 +237,7 @@ public class ModuleData{
      */
     @Override
     public String toString(){
-        return String.format("%s : %s : %s", this.moduleType, this.groupId, this.name);
+        return String.format("%s : %s : %s", this.moduleType, this.id, this.name.get("fi"));
     }
 
     /*

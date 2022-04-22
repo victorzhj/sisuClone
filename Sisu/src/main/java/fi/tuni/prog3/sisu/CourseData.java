@@ -21,19 +21,13 @@ public class CourseData {
     private String credits;
     private String groupId;
 
-    // key = language, value = description
+    // key = language, value = name
     private TreeMap<String, String> name;
-    // key = language, value = description
-    private TreeMap<String, String> description;
-    // MAYBE key = course name, value = substitution course
-    private TreeMap<String, CourseData> substitution;
-    // key = language, value = description
-    private TreeMap<String, String> evaluationCriteria;
-    // key = language, value = description
+    // key = language, value = outcome
     private TreeMap<String, String> outcomes;
-    // key = language, value = description
+    // key = language, value = content
     private TreeMap<String, String> content;
-    // key = language, value = description
+    // key = language, value = additional
     private TreeMap<String, String> additional;
 
     /**
@@ -62,8 +56,8 @@ public class CourseData {
         if (courseTree.isJsonArray()){
             try{
                 courseInObject = courseTree.getAsJsonArray().get(0).getAsJsonObject();
-                setup();
                 this.groupId = data[1];
+                setup();
             } catch (IllegalStateException e) {
                 System.out.format("Error reading the course json %s: ", groupId);
             }
@@ -74,11 +68,20 @@ public class CourseData {
      * @hidden
      */
     private void setup(){
+        this.credits = "0";
+        this.code = "No code";
+        this.name.put("en", "No name");
+        this.name.put("fi", "Ei nimeä");
+        this.outcomes.put("en", "No outcomes text");
+        this.outcomes.put("fi", "Ei tulos tekstiä");
+        this.additional.put("en", "No additional text");
+        this.additional.put("fi", "Ei lisättävää tekstiä");
+        this.content.put("en", "No content text");
+        this.content.put("fi", "Ei sisältö tekstiä");
+        
         setName();
         setCode();
         setCredits();
-        setDescription();
-        setEvaluationCriteria();
         setOutcomes();
         setAdditional();
         setContent();
@@ -89,9 +92,6 @@ public class CourseData {
      */
     private void createMapInstances(){
         this.name = new TreeMap<>();
-        this.description = new TreeMap<>();
-        this.substitution = new TreeMap<>();
-        this.evaluationCriteria = new TreeMap<>();
         this.outcomes = new TreeMap<>();
         this.content = new TreeMap<>();
         this.additional = new TreeMap<>();
@@ -102,7 +102,7 @@ public class CourseData {
      */
     private void setName(){
         JsonElement name = courseInObject.get("name");
-        if (!name.isJsonObject()){
+        if (name == null || !name.isJsonObject()){
             System.out.println("Error with course name: " + this.groupId);
             return;
         }
@@ -128,8 +128,8 @@ public class CourseData {
      * @hidden
      */
     private void setCode(){
-        if (courseInObject.get("code").isJsonNull()){
-            this.code =  "";
+        JsonElement codeElement = courseInObject.get("code");
+        if (codeElement == null){
             return;
         } else {
             try{
@@ -145,7 +145,7 @@ public class CourseData {
      */
     private void setCredits(){
         JsonElement creditsAmount = courseInObject.get("credits");
-        if (!creditsAmount.isJsonObject()) {
+        if (creditsAmount == null ||!creditsAmount.isJsonObject()) {
             System.out.println("Error with course credits: " + this.groupId);
             return;
         } else {
@@ -163,115 +163,21 @@ public class CourseData {
         }
     }
 
-    /**
-     * @hidden
-     */
-    private void setDescription(){
-        if (courseInObject.get("completionMethods").isJsonNull()){
-            System.out.println("Error with course description: " + this.groupId + " : ");
-            return;
-        }
-        
-        JsonElement completionMethods = courseInObject.get("completionMethods");
-        if (!completionMethods.isJsonArray()){
-            System.out.println("Error with course code: " + this.groupId + " : ");
-            return;
-        }
-
-        try {
-            JsonElement completionMethotsFirst = completionMethods.getAsJsonArray().get(0);
-            if (!completionMethotsFirst.isJsonObject()){
-                System.out.println("Error with course description: " + this.groupId + " : ");
-                return;
-            }
-
-            JsonElement description = completionMethotsFirst.getAsJsonObject().get("description");
-            if (!description.isJsonObject()){
-                System.out.println("Error with course description: " + this.groupId + " : ");
-                return;
-            }
-
-            JsonElement descriptionEn = description.getAsJsonObject().get("en");
-            if (!descriptionEn.isJsonPrimitive()){
-                System.out.println("Error with course description: " + this.groupId + " : ");
-                return;
-            }
-
-            JsonElement descriptionFi = description.getAsJsonObject().get("fi");
-            if (!descriptionFi.isJsonPrimitive()){
-                System.out.println("Error with course description: " + this.groupId + " : ");
-                return;
-            }
-
-            this.description.put("en", descriptionEn.getAsString());
-            this.description.put("fi", descriptionFi.getAsString());
-        } catch (IllegalStateException | ClassCastException e) {
-            System.out.println("Error with course description: " + this.groupId + " : " + e);
-        }
-
-        
-    }
-
-    /**
-     * @hidden
-     */
-    private void setEvaluationCriteria(){
-        if (courseInObject.get("completionMethods").isJsonNull()){
-            System.out.println("Error with course evalutation criteria: " + this.groupId + " : ");
-            return;
-        }
-        
-        JsonElement completionMethods = courseInObject.get("completionMethods");
-        if (!completionMethods.isJsonArray()){
-            System.out.println("Error with course description: " + this.groupId);
-            return;
-        }
-
-        try {
-            JsonElement evaluationCriteriaFirst = completionMethods.getAsJsonArray().get(0);
-            if (!evaluationCriteriaFirst.isJsonObject()){
-                System.out.println("Error with course description: " + this.groupId);
-                return;
-            }
-    
-            JsonElement evaluationCriteria = evaluationCriteriaFirst.getAsJsonObject().get("evaluationCriteria");
-            if (!evaluationCriteria.isJsonObject()){
-                System.out.println("Error with course description: " + this.groupId);
-                return;
-            }
-    
-            JsonElement evaluationCriteriaEn = evaluationCriteria.getAsJsonObject().get("en");
-            if (!evaluationCriteriaEn.isJsonPrimitive()){
-                System.out.println("Error with course description: " + this.groupId);
-                return;
-            }
-    
-            JsonElement evaluationCriteriaFi = evaluationCriteria.getAsJsonObject().get("fi");
-            if (!evaluationCriteriaFi.isJsonPrimitive()){
-                System.out.println("Error with course description: " + this.groupId);
-                return;
-            }
-    
-            this.evaluationCriteria.put("en", evaluationCriteriaEn.getAsString());
-            this.evaluationCriteria.put("fi", evaluationCriteriaFi.getAsString());
-        } catch (IllegalStateException | ClassCastException e) {
-            System.out.println("Error with course description: " + this.groupId + " : " + e);
-        }
-    }
 
     /**
      * @hidden
      */
     private void setOutcomes(){
         JsonElement outcomes = courseInObject.get("outcomes");
-        if (!outcomes.isJsonObject()){
+        if (outcomes == null || !outcomes.isJsonObject()){
             System.out.println("Error with course outcomes: " + this.groupId);
             return;
         }
         try {
             JsonElement outcomeEn = outcomes.getAsJsonObject().get("en");
             JsonElement outcomeFi = outcomes.getAsJsonObject().get("fi");
-            if (!outcomeEn.isJsonPrimitive() || !outcomeFi.isJsonPrimitive()){
+            if (outcomeEn == null || outcomeFi == null || 
+                !outcomeEn.isJsonPrimitive() || !outcomeFi.isJsonPrimitive()){
                 System.out.println("Error with course outcomes: " + this.groupId);
                 return;
             }
@@ -288,14 +194,15 @@ public class CourseData {
      */
     private void setContent(){
         JsonElement content = courseInObject.get("content");
-        if (!content.isJsonObject()){
+        if (content == null || !content.isJsonObject()){
             System.out.println("Error with course content: " + this.groupId);
             return;
         }
         try {
             JsonElement contentEn = content.getAsJsonObject().get("en");
             JsonElement contentFi = content.getAsJsonObject().get("fi");
-            if (!contentEn.isJsonPrimitive() || !contentFi.isJsonPrimitive()){
+            if (contentEn == null || contentFi == null || 
+                !contentEn.isJsonPrimitive() || !contentFi.isJsonPrimitive()){
                 System.out.println("Error with course content: " + this.groupId);
                 return;
             }
@@ -313,14 +220,15 @@ public class CourseData {
      */
     private void setAdditional(){
         JsonElement additional = courseInObject.get("additional");
-        if (!additional.isJsonObject()){
+        if (additional == null || !additional.isJsonObject()){
             System.out.println("Error with course additional: " + this.groupId);
             return;
         }
         try {
             JsonElement additionalEn = additional.getAsJsonObject().get("en");
             JsonElement additionalFi = additional.getAsJsonObject().get("fi");
-            if (!additionalEn.isJsonPrimitive() || !additionalFi.isJsonPrimitive()){
+            if (additionalEn == null || additionalFi == null ||
+                !additionalEn.isJsonPrimitive() || !additionalFi.isJsonPrimitive()){
                 System.out.println("Error with course additional: " + this.groupId);
                 return;
             }
@@ -361,22 +269,6 @@ public class CourseData {
      */
     public String getGroupId() {
         return groupId;
-    }
-
-    
-    /** 
-     * @return TreeMap<String, String> Key = Language(en or fi), value = description. Returns the course description.
-     */
-    public TreeMap<String, String> getDescription() {
-        return description;
-    }
-
-    
-    /** 
-     * @return TreeMap<String, String> Key = Language(en or fi), value = evaluationCriteria. Returns the course evaluation criteria.
-     */
-    public TreeMap<String, String> getEvaluationCriteria() {
-        return evaluationCriteria;
     }
 
     

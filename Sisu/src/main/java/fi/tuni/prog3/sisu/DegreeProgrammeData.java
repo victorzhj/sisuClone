@@ -2,15 +2,16 @@ package fi.tuni.prog3.sisu;
 
 import java.util.TreeMap;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 
 public class DegreeProgrammeData {
     private JsonObject degreeProgrammeObject;
     private String groupId;
+    private String id;
     private TreeMap<String, String> name;
     private TreeMap<String, ModuleData> modules;
 
@@ -24,9 +25,12 @@ public class DegreeProgrammeData {
         modules = new TreeMap<>();
         try {
             JsonElement degreeProgrammeTree = JsonParser.parseString(data[0]);
-            if (degreeProgrammeTree.isJsonObject() || !degreeProgrammeTree.isJsonNull()){
+            if (degreeProgrammeTree == null || degreeProgrammeTree.isJsonObject()){
                 degreeProgrammeObject = degreeProgrammeTree.getAsJsonObject();
                 this.groupId = data[1];
+                setup();
+            } else if (degreeProgrammeTree.isJsonArray()) {
+                degreeProgrammeObject = degreeProgrammeTree.getAsJsonArray().get(0).getAsJsonObject();
                 setup();
             }
         } catch (JsonParseException | IllegalStateException e){
@@ -39,6 +43,11 @@ public class DegreeProgrammeData {
      * @hidden
      */
     private void setup() {
+        this.id = "No Id";
+        this.groupId = "No groupId";
+        this.name.put("en", "No name");
+        this.name.put("fi", "No name");
+        setId();
         setName();
         setModules();
     }
@@ -48,7 +57,7 @@ public class DegreeProgrammeData {
      */
     private void setName(){
         JsonElement nameElement = degreeProgrammeObject.get("name");
-        if (!nameElement.isJsonObject() || nameElement.isJsonNull()){
+        if (nameElement == null || !nameElement.isJsonObject()){
             System.out.println("error with degree programme name: " + this.groupId);
             return;
         } else {
@@ -56,7 +65,7 @@ public class DegreeProgrammeData {
                 this.name.put("en", nameElement.getAsJsonObject().get("en").getAsString());
                 this.name.put("fi", nameElement.getAsJsonObject().get("fi").getAsString());
             } catch (ClassCastException | IllegalStateException e) {
-                System.out.println("Error with degree programme name: " + this.groupId + " : " + e);
+                
             }
         }
     }
@@ -66,9 +75,67 @@ public class DegreeProgrammeData {
      * @hidden
      */
     private void setModules(){
-
+        JsonElement rule = degreeProgrammeObject.get("rule");
+        if (rule == null || !rule.isJsonObject()){
+            System.out.println("error with degree module rules: " + this.groupId);
+            return;
+        } else {
+            try {
+                setRuleHelper(rule);
+            } catch (ClassCastException | IllegalStateException e) {
+                System.out.println("Error with degree module rules: " + this.groupId + " : " + e);
+            }
+        }
     }
-  
+    
+    private void setRuleHelper(JsonElement element) {
+        try{
+            if (element == null) {
+                return;
+            }
+            if (element.isJsonObject()) {
+                JsonElement whenRule = element.getAsJsonObject().get("rule");
+                JsonElement whenRules = element.getAsJsonObject().get("rules");
+                //JsonElement ifCourse = element.getAsJsonObject().get("courseUnitGroupId");
+                JsonElement ifModule = element.getAsJsonObject().get("moduleGroupId");
+                if (whenRule != null) {
+                    setRuleHelper(whenRule);
+                } else if (whenRules != null) {
+                    setRuleHelper(whenRules);
+                } else if (ifModule != null) {
+                    String groupId = ifModule.getAsString();
+                    networkHandler handler = new networkHandler();
+                    ModuleData temp = new ModuleData(handler.getModuleByGroupId(groupId));
+                    this.modules.put(groupId, temp);
+                }
+            } else if (element.isJsonArray()) {
+                JsonArray whenRules = element.getAsJsonArray();
+                for (var arrayElement : whenRules) {
+                    setRuleHelper(arrayElement);
+                }
+            }
+        } catch(ClassCastException | IllegalStateException e) {
+            System.out.println("Error with degree module rules: " + this.groupId + " : " + e);
+        }
+    }
+
+    /**
+     * @hidden
+     */
+    private void setId() {
+        JsonElement groupIdElement = degreeProgrammeObject.get("id");
+        if (groupIdElement == null || !groupIdElement.isJsonPrimitive()){
+            System.out.println("error with studyModule groupid");
+            return;    
+        } else {
+            try {
+                this.id = groupIdElement.getAsString();
+            } catch (ClassCastException | IllegalStateException e) {
+                System.out.println("Error with setting studyModule groupID: " + e);
+            }
+        }
+    }
+
     /** 
      * Returns the degreeProgramme groupId.
      * @return String groupId
@@ -86,7 +153,9 @@ public class DegreeProgrammeData {
     }
 
     /** 
-     * Returns the degree programmes submodules, can be ether studyModules or groupingModules.
+     * Returns the degree programmes submodules, can be ether studyModules or groupingModules. 
+     * Example case might be something like tietotekniikka or sähkötekniikka if the degreeProgrammeData object is 
+     * tieto- ja sähkötekniikan kanditaattiohjelma.
      * key = module groupId (can be studyModule or groupingModule), value = moduleData object 
      * @return TreeMap<String, moduleData> submoduels. ether are studyModules or groupingModules.
      */

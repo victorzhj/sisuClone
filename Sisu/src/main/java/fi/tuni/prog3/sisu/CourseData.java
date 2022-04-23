@@ -50,17 +50,20 @@ public class CourseData {
             System.out.println("test " + e);
         }
         */
-        
+        try{
         JsonElement courseTree = JsonParser.parseString(data[0]);
         // check if the json is in correct format
-        if (courseTree.isJsonArray()){
-            try{
+            if (courseTree.isJsonArray()){
                 courseInObject = courseTree.getAsJsonArray().get(0).getAsJsonObject();
                 this.groupId = data[1];
                 setup();
-            } catch (IllegalStateException e) {
-                System.out.format("Error reading the course json %s: ", groupId);
+            } else if (courseTree.isJsonObject()){
+                courseInObject = courseTree.getAsJsonObject();
+                this.groupId = data[1];
+                setup();
             }
+        } catch (IllegalStateException e) {
+            System.out.format("Error reading the course json %s: ", groupId);
         }
     }
 
@@ -103,7 +106,6 @@ public class CourseData {
     private void setName(){
         JsonElement name = courseInObject.get("name");
         if (name == null || !name.isJsonObject()){
-            System.out.println("Error with course name: " + this.groupId);
             return;
         }
 
@@ -112,7 +114,6 @@ public class CourseData {
             JsonElement nameFi = name.getAsJsonObject().get("fi");
             
             if (!nameEn.isJsonPrimitive() || !nameFi.isJsonPrimitive()){
-                System.out.println("Error with course name: " + this.groupId);
                 return;
             }
 
@@ -146,7 +147,6 @@ public class CourseData {
     private void setCredits(){
         JsonElement creditsAmount = courseInObject.get("credits");
         if (creditsAmount == null ||!creditsAmount.isJsonObject()) {
-            System.out.println("Error with course credits: " + this.groupId);
             return;
         } else {
             try {
@@ -170,7 +170,6 @@ public class CourseData {
     private void setOutcomes(){
         JsonElement outcomes = courseInObject.get("outcomes");
         if (outcomes == null || !outcomes.isJsonObject()){
-            System.out.println("Error with course outcomes: " + this.groupId);
             return;
         }
         try {
@@ -178,7 +177,6 @@ public class CourseData {
             JsonElement outcomeFi = outcomes.getAsJsonObject().get("fi");
             if (outcomeEn == null || outcomeFi == null || 
                 !outcomeEn.isJsonPrimitive() || !outcomeFi.isJsonPrimitive()){
-                System.out.println("Error with course outcomes: " + this.groupId);
                 return;
             }
             this.outcomes.put("en", outcomeEn.getAsString());
@@ -195,7 +193,6 @@ public class CourseData {
     private void setContent(){
         JsonElement content = courseInObject.get("content");
         if (content == null || !content.isJsonObject()){
-            System.out.println("Error with course content: " + this.groupId);
             return;
         }
         try {
@@ -203,7 +200,6 @@ public class CourseData {
             JsonElement contentFi = content.getAsJsonObject().get("fi");
             if (contentEn == null || contentFi == null || 
                 !contentEn.isJsonPrimitive() || !contentFi.isJsonPrimitive()){
-                System.out.println("Error with course content: " + this.groupId);
                 return;
             }
     
@@ -221,7 +217,6 @@ public class CourseData {
     private void setAdditional(){
         JsonElement additional = courseInObject.get("additional");
         if (additional == null || !additional.isJsonObject()){
-            System.out.println("Error with course additional: " + this.groupId);
             return;
         }
         try {
@@ -229,7 +224,6 @@ public class CourseData {
             JsonElement additionalFi = additional.getAsJsonObject().get("fi");
             if (additionalEn == null || additionalFi == null ||
                 !additionalEn.isJsonPrimitive() || !additionalFi.isJsonPrimitive()){
-                System.out.println("Error with course additional: " + this.groupId);
                 return;
             }
     

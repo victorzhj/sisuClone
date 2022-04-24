@@ -108,7 +108,6 @@ public class CourseData {
         if (name == null || !name.isJsonObject()){
             return;
         }
-
         try {
             JsonElement nameEn = name.getAsJsonObject().get("en");
             JsonElement nameFi = name.getAsJsonObject().get("fi");
@@ -129,7 +128,7 @@ public class CourseData {
      */
     private void setCode(){
         JsonElement codeElement = courseInObject.get("code");
-        if (codeElement == null){
+        if (codeElement == null || !codeElement.isJsonPrimitive()){
             return;
         } else {
             try{

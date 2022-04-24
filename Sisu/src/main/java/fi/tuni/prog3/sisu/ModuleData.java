@@ -161,8 +161,14 @@ public class ModuleData{
             return;
         } else {
             try{
-                this.name.put("en", nameElement.getAsJsonObject().get("en").getAsString());
-                this.name.put("fi", nameElement.getAsJsonObject().get("fi").getAsString());
+                JsonElement nameEn = nameElement.getAsJsonObject().get("en");
+                JsonElement nameFi = nameElement.getAsJsonObject().get("fi");
+                if (nameEn != null) {
+                    this.name.put("en", nameEn.getAsString());
+                }
+                if (nameFi != null) {
+                    this.name.put("fi", nameFi.getAsString());
+                }
             } catch (ClassCastException | IllegalStateException e) {
                 System.out.println("Error with studyModule name: " + this.id + " : " + e);
             }

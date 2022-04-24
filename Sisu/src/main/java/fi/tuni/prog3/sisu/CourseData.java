@@ -116,9 +116,12 @@ public class CourseData {
             if (!nameEn.isJsonPrimitive() || !nameFi.isJsonPrimitive()){
                 return;
             }
-
-            this.name.put("en", nameEn.getAsString());
-            this.name.put("fi", nameFi.getAsString());
+            if (nameEn != null) {
+                this.name.put("en", nameEn.getAsString());
+            }
+            if (nameFi != null) {
+                this.name.put("fi", nameFi.getAsString());
+            }
         } catch (IllegalStateException | ClassCastException e) {
             System.out.println("Error with course name: " + this.groupId + " : " + e);
         }
@@ -175,12 +178,15 @@ public class CourseData {
         try {
             JsonElement outcomeEn = outcomes.getAsJsonObject().get("en");
             JsonElement outcomeFi = outcomes.getAsJsonObject().get("fi");
-            if (outcomeEn == null || outcomeFi == null || 
-                !outcomeEn.isJsonPrimitive() || !outcomeFi.isJsonPrimitive()){
+            if (!outcomeEn.isJsonPrimitive() || !outcomeFi.isJsonPrimitive()){
                 return;
             }
-            this.outcomes.put("en", outcomeEn.getAsString());
-            this.outcomes.put("fi", outcomeFi.getAsString());
+            if (outcomeEn != null) {
+                this.name.put("en", outcomeEn.getAsString());
+            }
+            if (outcomeFi != null) {
+                this.name.put("fi", outcomeFi.getAsString());
+            }
         } catch (IllegalStateException | ClassCastException e) {
             System.out.println("Error with course outcomes: " + this.groupId + " : " + e);
         }
@@ -198,13 +204,15 @@ public class CourseData {
         try {
             JsonElement contentEn = content.getAsJsonObject().get("en");
             JsonElement contentFi = content.getAsJsonObject().get("fi");
-            if (contentEn == null || contentFi == null || 
-                !contentEn.isJsonPrimitive() || !contentFi.isJsonPrimitive()){
+            if (!contentEn.isJsonPrimitive() || !contentFi.isJsonPrimitive()){
                 return;
+            } 
+            if (contentEn != null) {
+                this.content.put("en", contentEn.getAsString());
             }
-    
-            this.content.put("en", contentEn.getAsString());
-            this.content.put("fi", contentFi.getAsString());
+            if (contentFi != null) {
+                this.content.put("fi", contentFi.getAsString());
+            }
         } catch (IllegalStateException | ClassCastException e) {
             System.out.println("Error with course content: " + this.groupId + " : " + e);
         }
@@ -222,13 +230,15 @@ public class CourseData {
         try {
             JsonElement additionalEn = additional.getAsJsonObject().get("en");
             JsonElement additionalFi = additional.getAsJsonObject().get("fi");
-            if (additionalEn == null || additionalFi == null ||
-                !additionalEn.isJsonPrimitive() || !additionalFi.isJsonPrimitive()){
+            if (!additionalEn.isJsonPrimitive() || !additionalFi.isJsonPrimitive()){
                 return;
             }
-    
-            this.additional.put("en", additionalEn.getAsString());
-            this.additional.put("fi", additionalFi.getAsString());
+            if (additionalEn != null) {
+                this.additional.put("en", additionalEn.getAsString());
+            }
+            if (additionalFi != null) {
+                this.additional.put("fi", additionalFi.getAsString());
+            }
         } catch (IllegalStateException | ClassCastException e) {
             System.out.println("Error with course additional: " + this.groupId + " : " + e);
         }

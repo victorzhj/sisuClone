@@ -27,7 +27,6 @@ public class DegreeProgrammeData {
             JsonElement degreeProgrammeTree = JsonParser.parseString(data[0]);
             if (degreeProgrammeTree == null || degreeProgrammeTree.isJsonObject()){
                 degreeProgrammeObject = degreeProgrammeTree.getAsJsonObject();
-                this.groupId = data[1];
                 setup();
             } else if (degreeProgrammeTree.isJsonArray()) {
                 degreeProgrammeObject = degreeProgrammeTree.getAsJsonArray().get(0).getAsJsonObject();
@@ -48,6 +47,7 @@ public class DegreeProgrammeData {
         this.name.put("en", "No name");
         this.name.put("fi", "No name");
         setId();
+        setGroupId();
         setName();
         setModules();
     }
@@ -62,10 +62,33 @@ public class DegreeProgrammeData {
             return;
         } else {
             try{
+                JsonElement nameEn = nameElement.getAsJsonObject().get("en");
+                JsonElement nameFi = nameElement.getAsJsonObject().get("fi");
+                if (nameEn != null) {
+                    this.name.put("en", nameEn.getAsString());
+                    this.name.put("fi", nameFi.getAsString());
+                }
                 this.name.put("en", nameElement.getAsJsonObject().get("en").getAsString());
                 this.name.put("fi", nameElement.getAsJsonObject().get("fi").getAsString());
             } catch (ClassCastException | IllegalStateException e) {
                 
+            }
+        }
+    }
+
+    /**
+     * @hidden
+     */
+    private void setGroupId() {
+        JsonElement groupIdElement = degreeProgrammeObject.get("groupId");
+        if (groupIdElement == null || !groupIdElement.isJsonPrimitive()){
+            System.out.println("error with studyModule groupid");
+            return;    
+        } else {
+            try {
+                this.groupId = groupIdElement.getAsString();
+            } catch (ClassCastException | IllegalStateException e) {
+                System.out.println("Error with setting studyModule groupID: " + e);
             }
         }
     }
@@ -123,13 +146,13 @@ public class DegreeProgrammeData {
      * @hidden
      */
     private void setId() {
-        JsonElement groupIdElement = degreeProgrammeObject.get("id");
-        if (groupIdElement == null || !groupIdElement.isJsonPrimitive()){
+        JsonElement IdElement = degreeProgrammeObject.get("id");
+        if (IdElement == null || !IdElement.isJsonPrimitive()){
             System.out.println("error with studyModule groupid");
             return;    
         } else {
             try {
-                this.id = groupIdElement.getAsString();
+                this.id = IdElement.getAsString();
             } catch (ClassCastException | IllegalStateException e) {
                 System.out.println("Error with setting studyModule groupID: " + e);
             }
@@ -137,11 +160,19 @@ public class DegreeProgrammeData {
     }
 
     /** 
+     * Returns the degreeProgramme id.
+     * @return String id
+     */
+    public String getId() {
+        return this.id;
+    }
+
+    /** 
      * Returns the degreeProgramme groupId.
      * @return String groupId
      */
     public String getGroupId() {
-        return groupId;
+        return this.groupId;
     }
 
     /** 
@@ -149,7 +180,7 @@ public class DegreeProgrammeData {
      * @return TreeMap<String, String> name
      */
     public TreeMap<String, String> getName() {
-        return name;
+        return this.name;
     }
 
     /** 
@@ -160,6 +191,6 @@ public class DegreeProgrammeData {
      * @return TreeMap<String, moduleData> submoduels. ether are studyModules or groupingModules.
      */
     public TreeMap<String, ModuleData> getModules() {
-        return modules;
+        return this.modules;
     }
 }

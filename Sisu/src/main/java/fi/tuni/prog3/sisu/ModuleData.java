@@ -138,12 +138,15 @@ public class ModuleData{
             return;    
         } else {
             try {
-                String min = targetCreditsElement.getAsJsonObject().get("min").getAsString();
-                if (targetCreditsElement.getAsJsonObject().get("max").isJsonNull()) {
-                    this.targetCredits = min + "-"; 
+                JsonElement minCredits = targetCreditsElement.getAsJsonObject().get("min");
+                JsonElement maxCredits = targetCreditsElement.getAsJsonObject().get("max");
+                if (minCredits.isJsonNull()) {
+                    return;
+                }
+                if (maxCredits.isJsonNull()) {
+                    this.targetCredits = minCredits + "-"; 
                 } else {
-                    String max = targetCreditsElement.getAsJsonObject().get("max").getAsString();
-                    this.targetCredits = min + "-" + max; 
+                    this.targetCredits = minCredits + "-" + maxCredits; 
                 }
             } catch (ClassCastException | IllegalStateException e) {
                 System.out.println("Error with studyModule targetCredits: " + this.id + " : " + e);

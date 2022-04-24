@@ -112,10 +112,6 @@ public class CourseData {
         try {
             JsonElement nameEn = name.getAsJsonObject().get("en");
             JsonElement nameFi = name.getAsJsonObject().get("fi");
-            
-            if (!nameEn.isJsonPrimitive() || !nameFi.isJsonPrimitive()){
-                return;
-            }
             if (nameEn != null) {
                 this.name.put("en", nameEn.getAsString());
             }
@@ -149,16 +145,23 @@ public class CourseData {
      */
     private void setCredits(){
         JsonElement creditsAmount = courseInObject.get("credits");
-        if (creditsAmount == null ||!creditsAmount.isJsonObject()) {
+        if (creditsAmount == null || !creditsAmount.isJsonObject()) {
             return;
         } else {
             try {
-                String minAmount = creditsAmount.getAsJsonObject().get("min").getAsString();
-                String maxAmount = creditsAmount.getAsJsonObject().get("max").getAsString();
-                if (minAmount.equals(maxAmount)){
-                    this.credits = minAmount;
+                JsonElement minCredits = creditsAmount.getAsJsonObject().get("min");
+                JsonElement maxCredits = creditsAmount.getAsJsonObject().get("max");
+                if (minCredits.isJsonNull()) {
+                    return;
+                }
+                if (!maxCredits.isJsonNull()) {
+                    if (minCredits.getAsString().equals(maxCredits.getAsString())){
+                        this.credits = minCredits.getAsString();
+                    } else {
+                        this.credits = minCredits.getAsString() + "-" + maxCredits.getAsString();
+                    }
                 } else {
-                    this.credits = minAmount + "-" + maxAmount;
+                    this.credits = minCredits.getAsString();
                 }
             } catch (IllegalStateException | ClassCastException e) {
                 System.out.println("Error with course code: " + this.groupId + " : " + e);
@@ -178,14 +181,11 @@ public class CourseData {
         try {
             JsonElement outcomeEn = outcomes.getAsJsonObject().get("en");
             JsonElement outcomeFi = outcomes.getAsJsonObject().get("fi");
-            if (!outcomeEn.isJsonPrimitive() || !outcomeFi.isJsonPrimitive()){
-                return;
-            }
             if (outcomeEn != null) {
-                this.name.put("en", outcomeEn.getAsString());
+                this.outcomes.put("en", outcomeEn.getAsString());
             }
             if (outcomeFi != null) {
-                this.name.put("fi", outcomeFi.getAsString());
+                this.outcomes.put("fi", outcomeFi.getAsString());
             }
         } catch (IllegalStateException | ClassCastException e) {
             System.out.println("Error with course outcomes: " + this.groupId + " : " + e);
@@ -204,9 +204,6 @@ public class CourseData {
         try {
             JsonElement contentEn = content.getAsJsonObject().get("en");
             JsonElement contentFi = content.getAsJsonObject().get("fi");
-            if (!contentEn.isJsonPrimitive() || !contentFi.isJsonPrimitive()){
-                return;
-            } 
             if (contentEn != null) {
                 this.content.put("en", contentEn.getAsString());
             }
@@ -230,9 +227,6 @@ public class CourseData {
         try {
             JsonElement additionalEn = additional.getAsJsonObject().get("en");
             JsonElement additionalFi = additional.getAsJsonObject().get("fi");
-            if (!additionalEn.isJsonPrimitive() || !additionalFi.isJsonPrimitive()){
-                return;
-            }
             if (additionalEn != null) {
                 this.additional.put("en", additionalEn.getAsString());
             }

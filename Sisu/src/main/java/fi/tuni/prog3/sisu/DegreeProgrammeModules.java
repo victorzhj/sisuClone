@@ -98,4 +98,24 @@ public class DegreeProgrammeModules {
             }
         }
     }
+
+    /** 
+     * Return module's id
+     * @return String id
+     */
+    public String getId() {
+        return this.id;
+    }
+
+    public String getGroupId() {
+        return this.groupId;
+    }
+    
+    /** 
+     * Return module's name where key = language (en, fi), value = name
+     * @return TreeMap<String, String> name
+     */
+    public TreeMap<String, String> getName() {
+        return this.name;
+    }
 }

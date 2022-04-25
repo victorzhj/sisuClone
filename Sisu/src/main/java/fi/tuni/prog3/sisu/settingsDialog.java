@@ -55,14 +55,18 @@ public class settingsDialog extends Application{
         for(var degreeProgram : DegreesData.getDegreesInformation().values()){
             TreeItem<treeItems> branch = new TreeItem<treeItems>();
             branch.setValue(new treeItems(degreeProgram.get("name"), degreeProgram.get("groupId")));
-            System.out.println(degreeProgram.get("groupId"));
             //System.out.println(networker.getModuleByGroupId(degreeProgram.get("groupId"))[0]);
             for(var module : studyModules){
                 String[] body = {module.body(), "0"};
                 DegreeProgrammeModules testiModuulit = new DegreeProgrammeModules(body);
                 
                     TreeItem<treeItems> subBranch = new TreeItem<treeItems>();
-                    subBranch.setValue(new treeItems(testiModuulit.getName().get("fi"), testiModuulit.getId()));
+                    if(testiModuulit.getName().get("fi") != "No Name"){
+                        subBranch.setValue(new treeItems(testiModuulit.getName().get("fi"), testiModuulit.getId()));
+                    }
+                    else{
+                        subBranch.setValue(new treeItems(testiModuulit.getName().get("en"), testiModuulit.getId()));
+                    }
                     branch.getChildren().add(subBranch);
                 
             }

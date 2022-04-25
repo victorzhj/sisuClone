@@ -66,10 +66,10 @@ public class DegreeProgrammeData {
             try{
                 JsonElement nameEn = nameElement.getAsJsonObject().get("en");
                 JsonElement nameFi = nameElement.getAsJsonObject().get("fi");
-                if (nameEn != null && !nameEn.isJsonNull()) {
+                if (nameEn != null) {
                     this.name.put("en", nameEn.getAsString());
                 }
-                if (nameFi != null && !nameFi.isJsonNull()) {
+                if (nameFi != null) {
                     this.name.put("fi", nameFi.getAsString());
                 }
                 this.name.put("en", nameElement.getAsJsonObject().get("en").getAsString());

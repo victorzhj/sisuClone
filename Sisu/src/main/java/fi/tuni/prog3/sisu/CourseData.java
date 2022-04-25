@@ -1,19 +1,10 @@
 package fi.tuni.prog3.sisu;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.TreeMap;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 
 public class CourseData {
     private JsonObject courseInObject;
@@ -111,10 +102,10 @@ public class CourseData {
         try {
             JsonElement nameEn = name.getAsJsonObject().get("en");
             JsonElement nameFi = name.getAsJsonObject().get("fi");
-            if (nameEn != null) {
+            if (nameEn != null && !nameEn.isJsonNull()) {
                 this.name.put("en", nameEn.getAsString());
             }
-            if (nameFi != null) {
+            if (nameFi != null && !nameFi.isJsonNull()) {
                 this.name.put("fi", nameFi.getAsString());
             }
         } catch (IllegalStateException | ClassCastException e) {

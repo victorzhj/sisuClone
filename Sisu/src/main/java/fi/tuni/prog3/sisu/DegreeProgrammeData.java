@@ -72,8 +72,6 @@ public class DegreeProgrammeData {
                 if (nameFi != null) {
                     this.name.put("fi", nameFi.getAsString());
                 }
-                this.name.put("en", nameElement.getAsJsonObject().get("en").getAsString());
-                this.name.put("fi", nameElement.getAsJsonObject().get("fi").getAsString());
             } catch (ClassCastException | IllegalStateException e) {
                 System.out.println("Error with setting studyModule groupID: " + e);
             }

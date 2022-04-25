@@ -1,8 +1,15 @@
 package fi.tuni.prog3.sisu;
 import java.net.URI;
 import java.net.http.*;
+import java.net.http.HttpResponse.BodyHandler;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.List;
+import java.util.Objects;
 import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.Map;
 public class networkHandler {
     private static final String sisuUrl = "https://sis-tuni.funidata.fi/kori/api/";
     private static final String tuniId = "universityId=tuni-university-root-id";
@@ -114,6 +121,31 @@ public class networkHandler {
         .build();
     }
 
+
+    public List<HttpResponse<String>> asynctesti(List<String> ids){
+
+        List<URI> urls = ids.stream()
+        .map(id-> URI.create(sisuUrl+endpoints.get("modules")+groupIdSearch+id+"&"+tuniId))
+        .collect(Collectors.toList());
+
+        List<HttpRequest> requests = urls.stream()
+        .map(HttpRequest::newBuilder)
+        .map(reqBuilder -> reqBuilder.build())
+        .collect(Collectors.toList());
+
+        @SuppressWarnings("unchecked")
+        List<CompletableFuture<HttpResponse<String>>> a = List.of( ((CompletableFuture<HttpResponse<String>>[]) requests.stream()
+        .map(request -> client.sendAsync(request, BodyHandlers.ofString()))
+        .toArray(CompletableFuture<?>[]::new)));
+
+       var responses = a.stream()
+        .map(CompletableFuture::join)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
+        
+        return responses;
+        
+    }
 
 
 }

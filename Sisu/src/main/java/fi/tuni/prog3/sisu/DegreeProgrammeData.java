@@ -13,8 +13,8 @@ public class DegreeProgrammeData {
     private String groupId;
     private String id;
     private TreeMap<String, String> name;
-    private TreeMap<String, DegreeProgrammeModules> fieldOfStudy;
-    private TreeMap<String, DegreeProgrammeModules> modules;
+    private TreeMap<String, ModuleData> fieldOfStudy;
+    private TreeMap<String, ModuleData> modules;
 
     /**
      * Constructor of degreeProgrammeData class. Construct a degree progam with given json.
@@ -129,12 +129,12 @@ public class DegreeProgrammeData {
                 } else if (ifModule != null && hasFieldOfStudy == false) {
                     String groupId = ifModule.getAsString();
                     networkHandler handler = new networkHandler();
-                    DegreeProgrammeModules temp = new DegreeProgrammeModules(handler.getModuleByGroupId(groupId));
+                    ModuleData temp = new ModuleData(handler.getModuleByGroupId(groupId));
                     this.modules.put(groupId, temp);
                 }  else if (ifModule != null && hasFieldOfStudy == true) {
                     String groupId = ifModule.getAsString();
                     networkHandler handler = new networkHandler();
-                    DegreeProgrammeModules temp = new DegreeProgrammeModules(handler.getModuleByGroupId(groupId));
+                    ModuleData temp = new ModuleData(handler.getModuleByGroupId(groupId));
                     this.fieldOfStudy.put(groupId, temp);
                 }
             } else if (element.isJsonArray()) {
@@ -196,7 +196,7 @@ public class DegreeProgrammeData {
      * key = module groupId (can be studyModule or groupingModule), value = moduleData object 
      * @return TreeMap<String, moduleData> submoduels. ether are studyModules or groupingModules.
      */
-    public TreeMap<String, DegreeProgrammeModules> getModules() {
+    public TreeMap<String, ModuleData> getModules() {
         return this.modules;
     }
 
@@ -207,7 +207,7 @@ public class DegreeProgrammeData {
      * key = module groupId (can be studyModule or groupingModule), value = moduleData object 
      * @return TreeMap<String, moduleData> field of studies.
      */
-    public TreeMap<String, DegreeProgrammeModules> getFieldOfStudy() {
+    public TreeMap<String, ModuleData> getFieldOfStudy() {
         return this.fieldOfStudy;
     }
 }

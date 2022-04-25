@@ -13,6 +13,7 @@ public class DegreeProgrammeData {
     private String groupId;
     private String id;
     private TreeMap<String, String> name;
+    private TreeMap<String, ModuleData> fieldOfStudy;
     private TreeMap<String, ModuleData> modules;
 
     /**
@@ -21,8 +22,9 @@ public class DegreeProgrammeData {
      * @throws IllegalStateException When there is error reading the file
      */
     public DegreeProgrammeData(String[] data){
-        name = new TreeMap<>();
-        modules = new TreeMap<>();
+        this.name = new TreeMap<>();
+        this.modules = new TreeMap<>();
+        this.fieldOfStudy = new TreeMap<>();
         try {
             JsonElement degreeProgrammeTree = JsonParser.parseString(data[0]);
             if (degreeProgrammeTree == null || degreeProgrammeTree.isJsonObject()){
@@ -64,14 +66,16 @@ public class DegreeProgrammeData {
             try{
                 JsonElement nameEn = nameElement.getAsJsonObject().get("en");
                 JsonElement nameFi = nameElement.getAsJsonObject().get("fi");
-                if (nameEn != null) {
+                if (nameEn != null && !nameEn.isJsonNull()) {
                     this.name.put("en", nameEn.getAsString());
+                }
+                if (nameFi != null && !nameFi.isJsonNull()) {
                     this.name.put("fi", nameFi.getAsString());
                 }
                 this.name.put("en", nameElement.getAsJsonObject().get("en").getAsString());
                 this.name.put("fi", nameElement.getAsJsonObject().get("fi").getAsString());
             } catch (ClassCastException | IllegalStateException e) {
-                
+                System.out.println("Error with setting studyModule groupID: " + e);
             }
         }
     }
@@ -93,7 +97,6 @@ public class DegreeProgrammeData {
         }
     }
 
-    // TODO
     /**
      * @hidden
      */
@@ -102,16 +105,17 @@ public class DegreeProgrammeData {
         if (rule == null || !rule.isJsonObject()){
             System.out.println("error with degree module rules: " + this.groupId);
             return;
+        } else if (rule.getAsJsonObject().get("credits") == null) {
+            setRuleHelper(rule, true);
         } else {
-            try {
-                setRuleHelper(rule);
-            } catch (ClassCastException | IllegalStateException e) {
-                System.out.println("Error with degree module rules: " + this.groupId + " : " + e);
-            }
+            setRuleHelper(rule, false);
         }
     }
     
-    private void setRuleHelper(JsonElement element) {
+    /**
+     * @hidden
+     */
+    private void setRuleHelper(JsonElement element, boolean hasFieldOfStudy) {
         try{
             if (element == null) {
                 return;
@@ -119,22 +123,26 @@ public class DegreeProgrammeData {
             if (element.isJsonObject()) {
                 JsonElement whenRule = element.getAsJsonObject().get("rule");
                 JsonElement whenRules = element.getAsJsonObject().get("rules");
-                //JsonElement ifCourse = element.getAsJsonObject().get("courseUnitGroupId");
                 JsonElement ifModule = element.getAsJsonObject().get("moduleGroupId");
                 if (whenRule != null) {
-                    setRuleHelper(whenRule);
+                    setRuleHelper(whenRule, hasFieldOfStudy);
                 } else if (whenRules != null) {
-                    setRuleHelper(whenRules);
-                } else if (ifModule != null) {
+                    setRuleHelper(whenRules, hasFieldOfStudy);
+                } else if (ifModule != null && hasFieldOfStudy == false) {
                     String groupId = ifModule.getAsString();
                     networkHandler handler = new networkHandler();
                     ModuleData temp = new ModuleData(handler.getModuleByGroupId(groupId));
                     this.modules.put(groupId, temp);
+                }  else if (ifModule != null && hasFieldOfStudy == true) {
+                    String groupId = ifModule.getAsString();
+                    networkHandler handler = new networkHandler();
+                    ModuleData temp = new ModuleData(handler.getModuleByGroupId(groupId));
+                    this.fieldOfStudy.put(groupId, temp);
                 }
             } else if (element.isJsonArray()) {
                 JsonArray whenRules = element.getAsJsonArray();
                 for (var arrayElement : whenRules) {
-                    setRuleHelper(arrayElement);
+                    setRuleHelper(arrayElement, hasFieldOfStudy);
                 }
             }
         } catch(ClassCastException | IllegalStateException e) {
@@ -192,5 +200,16 @@ public class DegreeProgrammeData {
      */
     public TreeMap<String, ModuleData> getModules() {
         return this.modules;
+    }
+
+    /** 
+     * Returns the degree programmes field of studies.
+     * Example case might be something like tietotekniikka or sähkötekniikka if the degreeProgrammeData object is 
+     * tieto- ja sähkötekniikan kanditaattiohjelma.
+     * key = module groupId (can be studyModule or groupingModule), value = moduleData object 
+     * @return TreeMap<String, moduleData> field of studies.
+     */
+    public TreeMap<String, ModuleData> getFieldOfStudy() {
+        return this.fieldOfStudy;
     }
 }

@@ -45,42 +45,29 @@ public class settingsDialog extends Application{
         rootItem.setValue(new treeItems("DegreeProgrammes", "NO-ID"));
         degreeProgramsList.setRoot(rootItem);
 
-        List<String> ids = new ArrayList<String>();
-
-        for(var id : DegreesData.getDegreesInformation().values()){
-            ids.add(id.get("groupId"));
-        }
-        var studyModules = networker.asynctesti(ids);
-
-        for(var degreeProgram : DegreesData.getDegreesInformation().values()){
-            TreeItem<treeItems> branch = new TreeItem<treeItems>();
-            branch.setValue(new treeItems(degreeProgram.get("name"), degreeProgram.get("groupId")));
-            //System.out.println(networker.getModuleByGroupId(degreeProgram.get("groupId"))[0]);
-            for(var module : studyModules){
-                String[] body = {module.body(), "0"};
-                DegreeProgrammeModules testiModuulit = new DegreeProgrammeModules(body);
-                
-                    TreeItem<treeItems> subBranch = new TreeItem<treeItems>();
-                    if(testiModuulit.getName().get("fi") != "No Name"){
-                        subBranch.setValue(new treeItems(testiModuulit.getName().get("fi"), testiModuulit.getId()));
-                    }
-                    else{
-                        subBranch.setValue(new treeItems(testiModuulit.getName().get("en"), testiModuulit.getId()));
-                    }
-                    branch.getChildren().add(subBranch);
-                
-            }
-            
-
-            
-
-            
-            rootItem.getChildren().add(branch);
-
-        }
+        var degrees = DegreesData.getDegreesInformation();
         var scene = new Scene(degreeProgramsList);
         mainStage.setScene(scene);
         mainStage.show();
+        for(var degree : degrees.values()){
+            TreeItem<treeItems> branch = new TreeItem<treeItems>();
+            branch.setValue(new treeItems(degree.get("name"), degree.get("groupId")));
+            DegreeProgrammeData degreeProgram = new DegreeProgrammeData(networker.getModuleByGroupId(degree.get("groupId")));
+            for(var testi : degreeProgram.getFieldOfStudy().values()){
+                System.out.println(testi.getId());
+                TreeItem<treeItems> subBranch = new TreeItem<treeItems>();
+                if(testi.getName().get("fi").equals("No name")){
+                    subBranch.setValue(new treeItems(testi.getName().get("en"), testi.getId()));
+                }
+                else{
+                    subBranch.setValue(new treeItems(testi.getName().get("fi"), testi.getId()));
+                }
+                branch.getChildren().add(subBranch);
+            }
+            rootItem.getChildren().add(branch);
+        }
+
+        
         
     }
 

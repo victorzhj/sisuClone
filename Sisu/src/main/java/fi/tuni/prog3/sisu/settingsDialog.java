@@ -29,7 +29,7 @@ public class settingsDialog implements Runnable{
     private Label errorLabel = new Label();
     private Scene settingsScene;
     double downloadProgress = 0;
-
+    private selectedData selected = null;
     /**
      * Hidden class that represents stored data in treeview items
      */
@@ -83,7 +83,7 @@ public class settingsDialog implements Runnable{
     /**
      * Data structure class that is passed to main window
      */
-    public class toReturnData{
+    public class selectedData{
         private String studNumber;
         private String studName;
         private String degreeProgrammeName;
@@ -99,7 +99,7 @@ public class settingsDialog implements Runnable{
          * @param studyModuleName
          * @param studyModuleId
          */
-        private toReturnData(String studName, String studNumber, String degreeProgrammeName,
+        private selectedData(String studName, String studNumber, String degreeProgrammeName,
          String degreeProgrammeId, String studyModuleName, String studyModuleId){
 
             this.studName = studName;
@@ -174,11 +174,11 @@ public class settingsDialog implements Runnable{
         settingsScene = new Scene(settingsGrid);
         
         
-        //Button handler event. Reads data in every field and generates toReturnData that will be passed to other parts of the program
+        //Button handler event. Reads data in every field and generates selected data toReturnData that will be passed to other parts of the program
         confirmButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event){
-                toReturnData data;
+                selectedData data;
                 if(degreeProgramsList.getSelectionModel().isEmpty()){
                     return;
                 }
@@ -191,21 +191,27 @@ public class settingsDialog implements Runnable{
                 }
                 else if (studyModule.getValue().gethasNoStudyModules() && !studyModule.getValue().getIsLeaf()){
 
-                    data= new toReturnData(nameField.getText(), studentNumber.getText(), "No DegreeProgramme",
+                    data= new selectedData(nameField.getText(), studentNumber.getText(), "No DegreeProgramme",
                     "No DegreeProgramme", studyModule.getValue().getName(), studyModule.getValue().getId());
                 }
                 else{
-                    data= new toReturnData(nameField.getText(), studentNumber.getText(), degreeProgramme.getValue().getName(),
+                    data= new selectedData(nameField.getText(), studentNumber.getText(), degreeProgramme.getValue().getName(),
                     degreeProgramme.getValue().getId(), studyModule.getValue().getName(), studyModule.getValue().getId());
                 }
                 
-                
+                selected = data;
                 //TODO add function to call where the data should be stored
                 /*storeData(data)*/
             }
         });
     } 
-
+    /**
+     * Returns the settings selected by user. CAN BE NULL if no data had been selected
+     * @return selectedData class structure that contain Strings of the selected items.
+     */
+    public selectedData getSelectedData(){
+        return this.selected;
+    }
     public Scene getScene(){
         return this.settingsScene;
     }

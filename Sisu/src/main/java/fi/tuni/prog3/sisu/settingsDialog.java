@@ -153,15 +153,7 @@ public class settingsDialog extends Application implements Runnable{
         }
         
     }
-
-    
-    /** 
-     * Starts main event loop for the window and initializes all the components
-     * @param mainStage stage to attach to
-     */
-    @Override
-    public void start(Stage stage){
-
+    settingsDialog(){
         Thread fillTreeView = new Thread(this);
         fillTreeView.start();
 
@@ -212,11 +204,7 @@ public class settingsDialog extends Application implements Runnable{
                 /*storeData(data)*/
             }
         });
-        
-        }
-        
-        
-        
+    } 
 
     public Scene getScene(){
         return this.settingsScene;

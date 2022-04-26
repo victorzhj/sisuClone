@@ -18,7 +18,7 @@ import javafx.scene.control.Button;
 /**
  * Class that represents the start menu of the Sisu application
  */
-public class settingsDialog extends Application implements Runnable{
+public class settingsDialog implements Runnable{
     private TreeView<treeItems> degreeProgramsList =new TreeView<treeItems>();
     private networkHandler networker = new networkHandler();
     private Button confirmButton = new Button();
@@ -213,9 +213,7 @@ public class settingsDialog extends Application implements Runnable{
      * This will be moved to main screen later
      * @param args
      */
-    public static void main(String[] args){
-        launch();
-    }
+
     //Fills the treeview in separate thread so the gui wont block
     @Override
     public void run() {

@@ -218,7 +218,7 @@ public class settingsDialog extends Application implements Runnable{
         
         
 
-    Scene getScene(){
+    public Scene getScene(){
         return this.settingsScene;
     }
     /** 

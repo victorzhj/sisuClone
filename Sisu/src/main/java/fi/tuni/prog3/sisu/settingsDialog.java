@@ -27,6 +27,7 @@ public class settingsDialog extends Application implements Runnable{
     private GridPane settingsGrid = new GridPane();
     private ProgressBar loadingBar = new ProgressBar();
     private Label errorLabel = new Label();
+    private Scene settingsScene;
     double downloadProgress = 0;
 
     /**
@@ -159,7 +160,7 @@ public class settingsDialog extends Application implements Runnable{
      * @param mainStage stage to attach to
      */
     @Override
-    public void start(Stage mainStage){
+    public void start(Stage stage){
 
         Thread fillTreeView = new Thread(this);
         fillTreeView.start();
@@ -178,9 +179,8 @@ public class settingsDialog extends Application implements Runnable{
         settingsGrid.add(confirmButton, 0,2, 1 ,1);
         settingsGrid.add(loadingBar, 2, 4, 3, 1);
         confirmButton.setAlignment(Pos.CENTER);
-        var scene = new Scene(settingsGrid);
-        mainStage.setScene(scene);
-        mainStage.show();
+        settingsScene = new Scene(settingsGrid);
+        
         
         //Button handler event. Reads data in every field and generates toReturnData that will be passed to other parts of the program
         confirmButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -218,7 +218,9 @@ public class settingsDialog extends Application implements Runnable{
         
         
 
-    
+    Scene getScene(){
+        return this.settingsScene;
+    }
     /** 
      * This will be moved to main screen later
      * @param args

@@ -224,7 +224,6 @@ public class settingsDialog extends Application implements Runnable{
         rootItem.setValue(new treeItems("DegreeProgrammes", "NO-ID", false, false));
         var degrees = DegreesData.getDegreesInformation();
         var maxProgress = degrees.values().size();
-        System.out.println(maxProgress);
         for(var degree : degrees.values()){
             TreeItem<treeItems> branch = new TreeItem<treeItems>();
             
@@ -234,7 +233,6 @@ public class settingsDialog extends Application implements Runnable{
                 branch.setValue(new treeItems(degree.get("name"), degree.get("groupId"), false, true));
             }
             for(var testi : degreeProgram.getFieldOfStudy().values()){
-                System.out.println(testi.getId());
                 TreeItem<treeItems> subBranch = new TreeItem<treeItems>();
                 if(testi.getName().get("fi").equals("No name")){
                     subBranch.setValue(new treeItems(testi.getName().get("en"), testi.getId(), true, true));

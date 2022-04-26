@@ -187,7 +187,9 @@ public class settingsDialog extends Application implements Runnable{
             @Override
             public void handle(ActionEvent event){
                 toReturnData data;
-               
+                if(degreeProgramsList.getSelectionModel().isEmpty()){
+                    return;
+                }
                 TreeItem<treeItems> degreeProgramme = degreeProgramsList.getSelectionModel().getSelectedItem().getParent();
                 TreeItem<treeItems> studyModule = degreeProgramsList.getSelectionModel().getSelectedItem();
                 if(!studyModule.getValue().getIsLeaf() && !studyModule.getValue().hasNoStudyModules){

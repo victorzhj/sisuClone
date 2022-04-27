@@ -156,6 +156,12 @@ public class settingsDialog implements Runnable{
         }
         
     }
+    /**
+     * Default constructor for settings window scene
+     * 
+     * @param mainStage Stage from the main window to switch back to after button press
+     * @param mainScene Scene from the main window to switch back to after button press
+     */
     settingsDialog(Stage mainStage, Scene mainScene){
 
         Thread fillTreeView = new Thread(this);

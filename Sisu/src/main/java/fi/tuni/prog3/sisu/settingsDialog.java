@@ -30,6 +30,9 @@ public class settingsDialog implements Runnable{
     private Scene settingsScene;
     double downloadProgress = 0;
     private selectedData selected = null;
+
+    private Stage mainStage;
+    private Scene mainScene;
     /**
      * Hidden class that represents stored data in treeview items
      */
@@ -153,10 +156,12 @@ public class settingsDialog implements Runnable{
         }
         
     }
-    settingsDialog(){
+    settingsDialog(Stage mainStage, Scene mainScene){
+
         Thread fillTreeView = new Thread(this);
         fillTreeView.start();
-
+        this.mainScene = mainScene;
+        this.mainStage = mainStage;
         nameField.setPrefSize(200, 50);
         confirmButton.setPrefSize(100, 50);
         studentNumber.setMinSize(200, 50);
@@ -200,8 +205,7 @@ public class settingsDialog implements Runnable{
                 }
                 
                 selected = data;
-                //TODO add function to call where the data should be stored
-                /*storeData(data)*/
+                mainStage.setScene(mainScene);
             }
         });
     } 

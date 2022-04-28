@@ -109,8 +109,35 @@ public class mainScene {
         System.out.println(selected.getStudName()); */
 
         mainStage.sceneProperty().addListener((observable, oldScene, newScene) -> {
+            //selected = settings.getSelectedData();
+            //System.out.println(selected.getStudName());
+
+            if ( mainStage.getScene() == settings.getScene() ){
+                return;
+            }
+
+            TreeItem<treeItems> rootItem = new TreeItem<treeItems>();
+            degreeProgram.setRoot(rootItem);
+            rootItem.setValue(new treeItems("DegreeProgrammes", "NO-ID", false, false));
+
+            // get infomation of the selected degree programme or study module 
             selected = settings.getSelectedData();
-            System.out.println(selected.getStudName());
+
+            String degreeProgrammeId = selected.getDegreeProgrammeId();
+
+            System.out.println("studName: " + selected.getStudName());
+            System.out.println("studNumber: " + selected.getStudNumber());
+            System.out.println("degreeProgrammeName: " + selected.getDegreeProgrammeName());
+            System.out.println("degreeProgrammeId: " + selected.getDegreeProgrammeId());
+            System.out.println("studyModuleName: " + selected.getStudyModuleName());
+            System.out.println("studyModuleId: " + selected.getStudyModuleId());
+
+            if ( degreeProgrammeId.isEmpty() ) {
+                //käytä degreeprogrammedataa
+                DegreeProgrammeData degree = new DegreeProgrammeData(
+                    new networkHandler().getModuleById(degreeProgrammeId));
+                    System.out.println("jippii");
+            }
         });
 
 

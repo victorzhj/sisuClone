@@ -211,8 +211,9 @@ public class settingsDialog implements Runnable{
                     degreeProgramme.getValue().getId(), studyModule.getValue().getName(), studyModule.getValue().getId());
                 }
                 
-                selected = data;
+                setSelectedData(data);
                 mainStage.setScene(mainScene);
+                
             }
         });
     } 
@@ -222,6 +223,9 @@ public class settingsDialog implements Runnable{
      */
     public selectedData getSelectedData(){
         return this.selected;
+    }
+    private void setSelectedData(selectedData selected){
+        this.selected = selected;
     }
     public Scene getScene(){
         return this.settingsScene;

@@ -6,6 +6,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+/**
+ * A class representing a Tampere university course. 
+ */
 public class CourseData {
     private JsonObject courseInObject;
     private String code;
@@ -22,36 +25,27 @@ public class CourseData {
     private TreeMap<String, String> additional;
 
     /**
-     * Constructor that takes a string array where first value is json in String formation and second value is the groupId.
-     * @param data[] String array
-     * @throws IllegalStateException When there is error reading the file
+     * Constructor that takes a string array where first value is json in String formation and second value is the groupId. 
+     * Constructs a CourseData object that stores the data of one course.
+     * @param data[] String array where first element is the json in string format and the second value is groupId.
+     * @throws IllegalStateException When there is error reading the file.
      */
     public CourseData(String[] data) {
         createMapInstances();
-        /*
+        setUpVariables();
         try{
-            JsonElement courseTree = JsonParser.parseString(new String(Files.readAllBytes(Paths.get(json))));
-            if (courseTree.isJsonArray()){
-                courseInObject = courseTree.getAsJsonArray().get(0).getAsJsonObject();
-                setup();
-            } else {
-                System.out.println("not array");
-            }
-        } catch (IOException e){
-            System.out.println("test " + e);
-        }
-        */
-        try{
-        JsonElement courseTree = JsonParser.parseString(data[0]);
-        // check if the json is in correct format
-            if (courseTree.isJsonArray()){
+            JsonElement courseTree = JsonParser.parseString(data[0]);
+            // check if the json is in correct format
+            if (courseTree.isJsonArray() && !courseTree.getAsJsonArray().isEmpty()){
                 courseInObject = courseTree.getAsJsonArray().get(0).getAsJsonObject();
                 this.groupId = data[1];
-                setup();
+                setupMethods();
             } else if (courseTree.isJsonObject()){
                 courseInObject = courseTree.getAsJsonObject();
-                this.groupId = data[1];
-                setup();
+                if (courseInObject.get("name") != null) {
+                    this.groupId = data[1];
+                    setupMethods();
+                }
             }
         } catch (IllegalStateException e) {
             System.out.format("Error reading the course json %s: ", groupId);
@@ -61,7 +55,7 @@ public class CourseData {
     /**
      * @hidden
      */
-    private void setup(){
+    private void setUpVariables() {
         this.credits = "0";
         this.code = "No code";
         this.name.put("en", "No name");
@@ -72,7 +66,12 @@ public class CourseData {
         this.additional.put("fi", "Ei lisättävää tekstiä");
         this.content.put("en", "No content text");
         this.content.put("fi", "Ei sisältö tekstiä");
-        
+    }
+
+    /**
+     * @hidden
+     */
+    private void setupMethods(){
         setName();
         setCode();
         setCredits();
@@ -230,14 +229,17 @@ public class CourseData {
 
     
     /** 
-     * @return TreeMap<String, String> Key = Language(en or fi), value = name. Returns the course name. 
+     * Return a treeMap containing the course name in finnish and english. The only key values are "en" and "fi".
+     * Key = Language(en or fi), value = name.
+     * @return TreeMap<String, String> Course name in finnish and english.
      */
     public TreeMap<String, String> getName() {
         return name;
     }
 
     /** 
-     * @return String Returns the course code.
+     * Returns course's code
+     * @return String The course code.
      */
     public String getCode() {
         return code;
@@ -245,7 +247,10 @@ public class CourseData {
 
     
     /** 
-     * @return String Returns the amount of credits you can acquire from the course. Format might be e.g 2-3 or 5
+     * Returns the amount of credits you can get from the course. 
+     * If the credits have lowerbound and upperbound the format is going to be "lowebound-upperbound" e.g "2-3".
+     * Else the format is going to be "credits amount", e.g "5"
+     * @return String The amount of credits you can acquire from the course. 
      */
     public String getCredits() {
         return credits;
@@ -253,7 +258,8 @@ public class CourseData {
 
     
     /** 
-     * @return String Returns the course groupId
+     * Returns the groupId of the course.
+     * @return String The course groupId
      */
     public String getGroupId() {
         return groupId;
@@ -261,7 +267,9 @@ public class CourseData {
 
     
     /** 
-     * @return TreeMap<String, String> Key = Language(en or fi), value = outcome text. Returns the course outcome text.
+     * Return a treeMap containing the course outcome texts in finnish and english. The only key values are "en" and "fi".
+     * Key = Language(en or fi), value = outcome text
+     * @return TreeMap<String, String> Course outcome texts in finnish and english.
      */
     public TreeMap<String, String> getOutcomes() {
         return outcomes;
@@ -269,21 +277,26 @@ public class CourseData {
 
 
     /**
-     * @return TreeMap<String, String> Key = Language(en or fi), value = content text. Returns the course content text.
+     * Return a treeMap containing the course content texts in finnish and english. The only key values are "en" and "fi".
+     * Key = Language(en or fi), value = content text
+     * @return TreeMap<String, String> containing the content texts.
      */
     public TreeMap<String, String> getContent() {
         return content;
     }
 
     /**
-     * @return TreeMap<String, String> Key = Language(en or fi), value = additional text. Returns the course additional text.
+     * Return a treeMap containing the course additional texts in finnish and english. The only key values are "en" and "fi".
+     * Key = Language(en or fi), value = additional text
+     * @return TreeMap<String, String> containing the additional texts.
      */
     public TreeMap<String, String> getAdditional() {
         return additional;
     }
 
     /**
-     * @return Object in String format
+     * Returns a string representation of this course.
+     * @return String Object in String format.
      */
     @Override
     public String toString(){

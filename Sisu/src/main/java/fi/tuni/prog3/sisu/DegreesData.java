@@ -6,6 +6,9 @@ import java.util.TreeSet;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+/**
+ * A class to get all the available degrees in the Sisu api.
+ */
 public class DegreesData {
 
     private static DegreesJsonClass degrees;
@@ -27,7 +30,8 @@ public class DegreesData {
      * Static function that stores every degree data to treemap.
      * TreeMap<Degree name, TreeMap<Degree data that you want, data>>
      * Degree data that you want can be "name", "groupId", "credits"
-     * @return TreeMap<String, TreeMap<String, String>> TreeMap of degrees data.
+     * e.g if you want the groupId of Arkkitehtuurin kandidaattiohjelma you can get it by doing like so getDegreesInformation().get("Arkkitehtuurin kandidaattiohjelma").get("groupId").
+     * @return TreeMap<String, TreeMap<String, String>> TreeMap with data of all the degrees.
      */
     public static TreeMap<String, TreeMap<String, String>> getDegreesInformation() {
         addDegrees();
@@ -44,7 +48,7 @@ public class DegreesData {
 
     /**
      * Static function that stores every degree name to TreeSet.
-     * @return TreeSet<String> TreeSet with degrees names.
+     * @return TreeSet<String> TreeSet with every degree name.
      */
     public static TreeSet<String> getDegreesNames(){
         addDegrees();

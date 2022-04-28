@@ -8,6 +8,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
+/**
+ * A class representing a Tampere University degree.
+ */
 public class DegreeProgrammeData {
     private JsonObject degreeProgrammeObject;
     private String groupId;
@@ -17,22 +20,28 @@ public class DegreeProgrammeData {
     private TreeMap<String, DegreeProgrammeModules> modules;
 
     /**
-     * Constructor of degreeProgrammeData class. Construct a degree progam with given json.
-     * @param data[] String array
-     * @throws IllegalStateException When there is error reading the file
+     * Constructor that takes a string array where first value is json in String formation and second value is the id/groupId. 
+     * Constructs a degreeProgrammeData object that stores the data of one degree.
+     * @param data[] String array where first element is the json in string format and the second value is id/groupId.
+     * @throws IllegalStateException When there is error reading the file.
+     * @throws JsonParseException When there is error reading the file.
      */
     public DegreeProgrammeData(String[] data){
         this.name = new TreeMap<>();
         this.modules = new TreeMap<>();
         this.fieldOfStudy = new TreeMap<>();
+        setUpVariables();
         try {
             JsonElement degreeProgrammeTree = JsonParser.parseString(data[0]);
-            if (degreeProgrammeTree == null || degreeProgrammeTree.isJsonObject()){
+
+            if (degreeProgrammeTree.isJsonObject()){
                 degreeProgrammeObject = degreeProgrammeTree.getAsJsonObject();
-                setup();
-            } else if (degreeProgrammeTree.isJsonArray()) {
+                if (degreeProgrammeObject.get("name") != null) {
+                    setupMethods();
+                }
+            } else if (degreeProgrammeTree.isJsonArray() && !degreeProgrammeTree.getAsJsonArray().isEmpty()) {
                 degreeProgrammeObject = degreeProgrammeTree.getAsJsonArray().get(0).getAsJsonObject();
-                setup();
+                setupMethods();
             }
         } catch (JsonParseException | IllegalStateException e){
             System.out.format("Error reading the degree programme json %s: ", data[1]);
@@ -43,11 +52,18 @@ public class DegreeProgrammeData {
     /**
      * @hidden
      */
-    private void setup() {
+    private void setUpVariables() {
         this.id = "No Id";
         this.groupId = "No groupId";
         this.name.put("en", "No name");
         this.name.put("fi", "No name");
+    }
+
+
+    /**
+     * @hidden
+     */
+    private void setupMethods() {
         setId();
         setGroupId();
         setName();
@@ -167,7 +183,7 @@ public class DegreeProgrammeData {
 
     /** 
      * Returns the degreeProgramme id.
-     * @return String id
+     * @return String The degree id
      */
     public String getId() {
         return this.id;
@@ -175,37 +191,36 @@ public class DegreeProgrammeData {
 
     /** 
      * Returns the degreeProgramme groupId.
-     * @return String groupId
+     * @return String The degree groupId
      */
     public String getGroupId() {
         return this.groupId;
     }
 
     /** 
-     * Return degree programme name where key = language (en, fi), value = name.
-     * @return TreeMap<String, String> name
+     * Return a treeMap containing the degree name in finnish and english. The only key values are "en" and "fi".
+     * Key = Language(en or fi), value = name.
+     * @return TreeMap<String, String> degree name in finnish and english.
      */
     public TreeMap<String, String> getName() {
         return this.name;
     }
 
     /** 
-     * Returns the degree programmes submodules, can be ether studyModules or groupingModules. 
-     * Example case might be something like tietotekniikka or sähkötekniikka if the degreeProgrammeData object is 
-     * tieto- ja sähkötekniikan kanditaattiohjelma.
-     * key = module groupId (can be studyModule or groupingModule), value = moduleData object 
-     * @return TreeMap<String, moduleData> submoduels. ether are studyModules or groupingModules.
+     * Returns this degree's submodules datas as degreeProgrammeModules objects which are stored in a treenMap. 
+     * key = module groupId, value = degreeProgrammeModules object 
+     * @return TreeMap<String, degreeProgrammeModules> submoduels of the degree.
      */
     public TreeMap<String, DegreeProgrammeModules> getModules() {
         return this.modules;
     }
 
     /** 
-     * Returns the degree programmes field of studies.
+     * Returns the degree programmes field of studies as degreeProgrammeModules objects which are stored in a treenMap.
      * Example case might be something like tietotekniikka or sähkötekniikka if the degreeProgrammeData object is 
      * tieto- ja sähkötekniikan kanditaattiohjelma.
-     * key = module groupId (can be studyModule or groupingModule), value = moduleData object 
-     * @return TreeMap<String, moduleData> field of studies.
+     * key = module groupId, value = degreeProgrammeModules object 
+     * @return TreeMap<String, degreeProgrammeModules> field of studies of the degree.
      */
     public TreeMap<String, DegreeProgrammeModules> getFieldOfStudy() {
         return this.fieldOfStudy;

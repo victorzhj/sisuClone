@@ -5,6 +5,9 @@ import javafx.stage.Stage;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.ListView;
 import java.util.TreeMap;
 
 
@@ -21,16 +24,28 @@ public class mainScene {
      * Hidden class that represents stored data in treeview items
      */
     private class treeItems{
-        treeItems(String name, String id, Boolean isLeaf,Boolean HasNoStudyModules){
+        treeItems(String name, String id, Boolean isLeaf,Boolean HasNoStudyModules, Boolean courseSubModules){
             this.name = name;
             this.id = id;
             this.isLeaf = isLeaf;
             this.hasNoStudyModules = HasNoStudyModules;
+            this.courseSubModules = courseSubModules;
+        }
+
+        treeItems(String name, String id, Boolean isLeaf,Boolean HasNoStudyModules, Boolean courseSubModules, ModuleData thisModule){
+            this.name = name;
+            this.id = id;
+            this.isLeaf = isLeaf;
+            this.hasNoStudyModules = HasNoStudyModules;
+            this.courseSubModules = courseSubModules;
+            this.thisModule = thisModule;
         }
         private String name;
         private String id;
         private Boolean isLeaf;
         private Boolean hasNoStudyModules;
+        private Boolean courseSubModules;
+        private ModuleData thisModule;
         /**
          * Returns the groupId of the item 
          * @return String group of the item
@@ -58,6 +73,20 @@ public class mainScene {
          */
         public Boolean gethasNoStudyModules() {
             return hasNoStudyModules;
+        }
+        /**
+         * Returns True if items submodules are courses. Otherwise False.
+         * @return Boolean True if items submodules are courses. Otherwise False.
+         */
+        public Boolean getCourseSubModules() {
+            return courseSubModules;
+        }
+        /**
+         * Returns this TreeItems module. If there are any.
+         * @return Returns this TreeItems module. If there are any.
+         */
+        public ModuleData getThisModule() {
+            return this.thisModule;
         }
         @Override
         /**
@@ -97,7 +126,7 @@ public class mainScene {
         // Only modules under
         if ( module.getWhenSubModuleAreCourses().isEmpty() ) {
             TreeMap<String, ModuleData> modules = module.getWhenSubModuleAreModules();
-            rootItem.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false));    
+            rootItem.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, false));    
 
             getSubModules(rootItem, modules);
 
@@ -105,11 +134,10 @@ public class mainScene {
 
         // Only courses under
         else {
-            rootItem.setValue(new treeItems(degreedata.getName().get("fi"), selected.getStudyModuleId(), false, true));
+            rootItem.setValue(new treeItems(degreedata.getName().get("fi"), selected.getStudyModuleId(), false, true, true, module));
 
             getSubCourses(rootItem, module.getWhenSubModuleAreCourses());
         }
-        
     }
 
     private void getSubModules(TreeItem<treeItems> root, TreeMap<String, ModuleData> modules) {
@@ -119,13 +147,13 @@ public class mainScene {
 
             // No submodules or courses under module
             if ( module.getWhenSubModuleAreModules().isEmpty() && module.getWhenSubModuleAreCourses().isEmpty() ) {
-                branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), true, true));
+                branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), true, true, false));
                 root.getChildren().add(branch);
             }
 
             // Only submodules under branch
             else if ( module.getWhenSubModuleAreCourses().isEmpty() ) {
-                branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false));
+                branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, false));
                 root.getChildren().add(branch);
 
                 getSubModules(branch, module.getWhenSubModuleAreModules());
@@ -135,7 +163,7 @@ public class mainScene {
 
             // when only courses under branch
             else if ( module.getWhenSubModuleAreModules().isEmpty() ) {
-                branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false));
+                branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, true, module));
                 root.getChildren().add(branch);
 
                 getSubCourses(branch, module.getWhenSubModuleAreCourses());
@@ -151,24 +179,33 @@ public class mainScene {
         for ( var course : courses.values() ){
             TreeItem<treeItems> branch = new TreeItem<treeItems>();
 
-            branch.setValue(new treeItems(course.getName().get("fi"), course.getCode(), true, true));
+            branch.setValue(new treeItems(course.getName().get("fi"), course.getCode(), true, true, false));
             root.getChildren().add(branch);
         }
-
     }
-
-
 
     mainScene(Stage mainStage){
 
         this.stage = mainStage;
 
         HBox group = new HBox(degreeProgram);
+        group.setMinHeight(400);
+        group.setMinWidth(1000);
         Button backButton = new Button();
         backButton.setPrefSize(100, 50);
         backButton.setText("back to settings");
-        group.getChildren().add(backButton);
-        Scene scene1 = new Scene(group, 300, 300);
+        Scene scene1 = new Scene(group);
+
+        StackPane showAllCourses = new StackPane();
+        showAllCourses.setMinHeight(400);
+        showAllCourses.setMinWidth(400);
+        showAllCourses.setStyle("-fx-background-color: grey;");
+        
+        StackPane showCourseInfo = new StackPane();
+        showCourseInfo.setMinSize(300, 400);
+        showAllCourses.setStyle("-fx-background-color: grey;");
+
+        group.getChildren().addAll(showAllCourses, showCourseInfo, backButton);
 
         settings = new settingsDialog(this.stage, scene1);
         this.stage.setTitle("SISU");
@@ -178,7 +215,14 @@ public class mainScene {
             this.stage.setScene(settings.getScene());
         });
 
-
+        degreeProgram.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+            treeItems thisNode = newValue.getValue();
+            if (thisNode.getCourseSubModules()) {
+                showAllCourses.getChildren().clear();
+                ListView<Button> thisCourseInfo = showModuleCourses.display(newValue.getValue().getThisModule().getWhenSubModuleAreCourses(), showCourseInfo);
+                showAllCourses.getChildren().add(thisCourseInfo);
+            }
+        });
 
         mainStage.sceneProperty().addListener((observable, oldScene, newScene) -> {
 
@@ -202,13 +246,10 @@ public class mainScene {
 
             else {
                 getModuleData(selected, false);
-            }
-
-
-
-
-        
+            } 
     });
+
+    
 
     this.stage.show();
     }

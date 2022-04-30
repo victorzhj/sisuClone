@@ -86,7 +86,6 @@ public class ModuleData{
     private void setId() {
         JsonElement groupIdElement = moduleJson.get("id");
         if (groupIdElement == null || !groupIdElement.isJsonPrimitive()){
-            System.out.println("error with studyModule groupid");
             return;    
         } else {
             try {
@@ -103,7 +102,6 @@ public class ModuleData{
     private void setGroupId() {
         JsonElement groupIdElement = moduleJson.get("groupId");
         if (groupIdElement == null || !groupIdElement.isJsonPrimitive()){
-            System.out.println("error with studyModule groupid");
             return;    
         } else {
             try {
@@ -120,7 +118,6 @@ public class ModuleData{
     private void setTargetCredits(){
         try {
             JsonElement tempType = moduleJson.get("type");
-            //System.out.println("TEST " + tempType.getAsString().equals("StudyModule"));
             if (tempType == null || !tempType.isJsonPrimitive() || !tempType.getAsString().equals("StudyModule")) {
                 this.moduleType = "GroupingModule";
                 return;
@@ -131,7 +128,6 @@ public class ModuleData{
         this.moduleType = "StudyModule";
         JsonElement targetCreditsElement = moduleJson.get("targetCredits");
         if (targetCreditsElement == null || !targetCreditsElement.isJsonObject()){
-            System.out.println("error with studyModule targetCredits: " + this.id);
             return;    
         } else {
             try {
@@ -157,7 +153,6 @@ public class ModuleData{
     private void setName(){
         JsonElement nameElement = moduleJson.get("name");
         if (nameElement == null || !nameElement.isJsonObject()){
-            System.out.println("error with studyModule name: " + this.id);
             return;
         } else {
             try{
@@ -181,7 +176,6 @@ public class ModuleData{
     private void setRules(){
         JsonElement rule = moduleJson.get("rule");
         if (rule == null || !rule.isJsonObject()){
-            System.out.println("error with module rules: " + this.id);
             return;
         } else {
             try {

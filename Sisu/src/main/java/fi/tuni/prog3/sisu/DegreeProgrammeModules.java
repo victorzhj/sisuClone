@@ -74,7 +74,6 @@ public class DegreeProgrammeModules {
     private void setId() {
         JsonElement groupIdElement = moduleJson.get("id");
         if (groupIdElement == null || !groupIdElement.isJsonPrimitive()){
-            System.out.println("error with studyModule groupid");
             return;    
         } else {
             try {
@@ -91,7 +90,6 @@ public class DegreeProgrammeModules {
     private void setGroupId() {
         JsonElement groupIdElement = moduleJson.get("groupId");
         if (groupIdElement == null || !groupIdElement.isJsonPrimitive()){
-            System.out.println("error with studyModule groupid");
             return;    
         } else {
             try {
@@ -105,7 +103,6 @@ public class DegreeProgrammeModules {
     private void setName(){
         JsonElement nameElement = moduleJson.get("name");
         if (nameElement == null || !nameElement.isJsonObject()){
-            System.out.println("error with studyModule name: " + this.id);
             return;
         } else {
             try{

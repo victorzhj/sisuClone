@@ -7,7 +7,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import fi.tuni.prog3.sisu.networkHandler;
+
+/**
+ * A class representing a Tampere University degree's sub modules. Can be quite slow if there are lots of layers.
+ * If you just want one layer you should use DegreeProgrammeModules class.
+ */
 
 public class ModuleData{
     private JsonObject moduleJson;
@@ -20,7 +24,7 @@ public class ModuleData{
 
     // key = groupid, value = courseData
     private TreeMap<String, CourseData> whenSubModuleAreCourses;
-    // key = module id, value = module
+    // key = groupid, value = module
     private TreeMap<String, ModuleData> whenSubmoduleAreModules;
 
     /**
@@ -33,49 +37,42 @@ public class ModuleData{
         name = new TreeMap<>();
         whenSubmoduleAreModules = new TreeMap<>();
         whenSubModuleAreCourses = new TreeMap<>();
-        
+        setUpVariables();
         try {
             JsonElement studyModuleTree = JsonParser.parseString(data[0]);
             if (studyModuleTree.isJsonObject()){
                 moduleJson = studyModuleTree.getAsJsonObject();
-                setup();
-            } else if (studyModuleTree.isJsonArray()) {
+                if (moduleJson.get("name") != null) {
+                    setupMethods();
+                }
+                setupMethods();
+            } else if (studyModuleTree.isJsonArray() && !studyModuleTree.getAsJsonArray().isEmpty()) {
                 moduleJson = studyModuleTree.getAsJsonArray().get(0).getAsJsonObject();
-                setup();
+                setupMethods();
             }
             
         } catch (JsonParseException | IllegalStateException e) {
             System.out.format("Error reading the studyModule json %s: ", data[1]);
             System.out.println(e);
         }
-        
-        /*
-        try {
-            JsonElement studyModuleTree = JsonParser.parseString(new String(Files.readAllBytes(Paths.get(json))));//JsonParser.parseString(json);
-            if (studyModuleTree.isJsonObject() || !studyModuleTree.isJsonNull()){
-                moduleJson = studyModuleTree.getAsJsonObject();
-                this.id = studyModulegroupID;
-                setup();
-            } else {
-                System.out.format("Error reading the studyModule json %s: ", studyModulegroupID);
-            }
-        } catch (JsonParseException | IOException e){
-            System.out.format("Error reading the studyModule json %s: ", studyModulegroupID);
-            System.out.println(e);
-        }
-        */
     }
 
     /**
      * @hidden
      */
-    private void setup(){
+    private void setUpVariables() {
         this.id = "No Id";
         this.groupId = "No groupId";
         this.targetCredits = "No target credits";
         this.moduleType = "No module type";
         this.name.put("en", "No name");
         this.name.put("fi", "No name");
+    }
+
+    /**
+     * @hidden
+     */
+    private void setupMethods(){
         setId();
         setGroupId();
         setName();
@@ -166,10 +163,10 @@ public class ModuleData{
             try{
                 JsonElement nameEn = nameElement.getAsJsonObject().get("en");
                 JsonElement nameFi = nameElement.getAsJsonObject().get("fi");
-                if (nameEn != null) {
+                if (nameEn != null && !nameEn.isJsonNull()) {
                     this.name.put("en", nameEn.getAsString());
                 }
-                if (nameFi != null) {
+                if (nameFi != null && !nameFi.isJsonNull()) {
                     this.name.put("fi", nameFi.getAsString());
                 }
             } catch (ClassCastException | IllegalStateException e) {
@@ -195,6 +192,10 @@ public class ModuleData{
         }
     }
     
+    /**
+     * @hidden
+     * @param element
+     */
     private void setRuleHelper(JsonElement element) {
         try{
             if (element.isJsonObject()) {
@@ -229,20 +230,28 @@ public class ModuleData{
     }
 
     /** 
-     * Return module's id
-     * @return String id
+     * Return module's id.
+     * @return String The module id.
      */
     public String getId() {
         return this.id;
     }
 
+    /** 
+     * Return module's groudId.
+     * @return String The module groudId.
+     */
     public String getGroupId() {
         return this.groupId;
     }
 
     /** 
-     * Return module's target credits in format of min-max, if no max then only in min-
-     * @return String Target credits 
+     * Return module's target credits in format of min-max, e.g, "3-5". 
+     * if no max then only in min-, e.g "3-".
+     * This is only when the module is studyModule type.
+     * If it's groupingModule type it will return empty string.
+     * This is why it's recommended to first check the module type with getModuleType method.
+     * @return String The module's target credits if module is studyModule.
      */
     public String getTargetCredits() {
         if (this.moduleType.equals("StudyModule")) {
@@ -254,8 +263,9 @@ public class ModuleData{
     }
     
     /** 
-     * Return module's name where key = language (en, fi), value = name
-     * @return TreeMap<String, String> name
+     * Return a treeMap containing the modules name in finnish and english. The only key values are "en" and "fi".
+     * Key = Language(en or fi), value = name.
+     * @return TreeMap<String, String> module name in finnish and english.
      */
     public TreeMap<String, String> getName() {
         return this.name;
@@ -264,9 +274,9 @@ public class ModuleData{
     
     /** 
      * Return module's Courses. 
-     * This method leaves it to the user to check if submodules are courses. 
+     * This method leaves it to the user to check if submodules are courses. This can be done by checking if the TreeMap is empty.
      * key = course id, value = courseData object.
-     * @return TreeMap<String, courseData> submodules when they are courses
+     * @return TreeMap<String, courseData> module's submodules when they are courses.
      */
     public TreeMap<String, CourseData> getWhenSubModuleAreCourses() {
         return this.whenSubModuleAreCourses;
@@ -274,9 +284,9 @@ public class ModuleData{
     
     /** 
      * Return's module's submodules when they are studyModules or groupingModules. 
-     * This method leaves it to the user to check if submodules are studyModules or groupingModules.
+     * This method leaves it to the user to check if submodules are studyModules or groupingModules. This can be done by checking if the TreeMap is empty.
      * key = module id (can be studyModule or groupingModule), value = moduleData object
-     * @return TreeMap<String, courseData> submoduels when they are studyModules or groupingModules.
+     * @return TreeMap<String, courseData> module's submoduels when they are studyModules or groupingModules.
      */
     public TreeMap<String, ModuleData> getWhenSubModuleAreModules() {
         return this.whenSubmoduleAreModules;
@@ -284,39 +294,18 @@ public class ModuleData{
 
     /**
      * Return this module's type, ether studyModule or groupingModule.
-     * @return String moduleType
+     * @return String module's moduleType.
      */
     public String getModuleType() {
         return this.moduleType;
     }
 
     /**
-     * Overridden toString method
-     * @return String module in readable mode.
+     * Returns a string representation of this module.
+     * @return String Object in String format.
      */
     @Override
     public String toString(){
         return String.format("%s : %s : %s", this.moduleType, this.groupId, this.name.get("fi"));
     }
-
-    /*
-    public static void main(String[] args) {
-        moduleData testGroup = new moduleData("otm-6b575bfa-e488-4ee0-a8d9-877608ce64e9.json", "otm-6b575bfa-e488-4ee0-a8d9-877608ce64e9");
-        System.out.println(testGroup.getGroupId());
-        System.out.println(testGroup.getName().get("en"));
-        System.out.println(testGroup.getName().get("fi"));
-        System.out.println(testGroup.getWhenSubModuleAreCourses());
-        System.out.println(testGroup.getWhenSubModuleAreGroupingModules());
-        System.out.println(testGroup.getModuleType());
-    
-        System.out.println();
-        moduleData testStudy = new moduleData("otm-010acb27-0e5a-47d1-89dc-0f19a43a5dca.json", "otm-010acb27-0e5a-47d1-89dc-0f19a43a5dca");
-        System.out.println(testStudy.getGroupId());
-        System.out.println(testStudy.getName());
-        System.out.println(testStudy.getWhenSubModuleAreCourses());
-        System.out.println(testStudy.getWhenSubModuleAreGroupingModules());
-        System.out.println(testStudy.getModuleType());
-        System.out.println(testStudy.getTargetCredits());
-    }
-    */
 }

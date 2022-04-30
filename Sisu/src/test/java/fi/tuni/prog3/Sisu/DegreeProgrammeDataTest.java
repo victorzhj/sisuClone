@@ -1,33 +1,38 @@
 package fi.tuni.prog3.Sisu;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.TreeMap;
 
-import com.google.gson.JsonParseException;
 
 import org.junit.jupiter.api.Test;
 
 import fi.tuni.prog3.sisu.DegreeProgrammeData;
 import fi.tuni.prog3.sisu.DegreeProgrammeModules;
 import fi.tuni.prog3.sisu.networkHandler;
-import fi.tuni.prog3.sisu.ModuleData;
-import fi.tuni.prog3.sisu.CourseData;
 
 public class DegreeProgrammeDataTest {
     @Test
     public void testGetGroupId() {
         DegreeProgrammeData tested = new DegreeProgrammeData(
-                                     new networkHandler().getModuleById(
+                                     new networkHandler().getModuleByGroupId(
                                         "otm-87fb9507-a6dd-41aa-b924-2f15eca3b7ae"));
         String expected = "otm-87fb9507-a6dd-41aa-b924-2f15eca3b7ae";
         String actual = tested.getGroupId();
         assertEquals(expected, actual);
     }
 
-    // TODO 
+    @Test
+    public void testGetId() {
+        DegreeProgrammeData tested = new DegreeProgrammeData(
+                                     new networkHandler().getModuleById(
+                                        "otm-d2728f44-3e53-4bad-84c4-dbd257ac0f34"));
+        String expected = "otm-d2728f44-3e53-4bad-84c4-dbd257ac0f34";
+        String actual = tested.getId();
+        assertEquals(expected, actual);
+    }
+
     @Test
     public void testGetModulesAndGetFieldOfStudy() {
         DegreeProgrammeData tested1 = new DegreeProgrammeData(
@@ -61,5 +66,49 @@ public class DegreeProgrammeDataTest {
         String actualFi = tested.getName().get("fi");
         assertEquals(expectedEn, actualEn);
         assertEquals(expectedFi, actualFi);
+    }
+
+    @Test
+    public void testFileWithoutContentUsingGroupId() {
+        DegreeProgrammeData tested = new DegreeProgrammeData(
+                                     new networkHandler().getModuleByGroupId(
+                                        "-87fb9507-a6dd-41aa-b924-2f15eca3b7ae"));
+        String expected = "No Id";
+        String actual = tested.getId();
+        assertEquals(expected, actual);
+
+        expected = "No groupId";
+        actual = tested.getGroupId();
+        assertEquals(expected, actual);
+
+        String expectedEn = "No name";
+        String actualEn = tested.getName().get("en");
+        String expectedFi = "No name";
+        String actualFi = tested.getName().get("fi");
+        assertEquals(expectedEn, actualEn);
+        assertEquals(expectedFi, actualFi);
+
+    }
+
+    @Test
+    public void testFileWithoutContentUsinId() {
+        DegreeProgrammeData tested = new DegreeProgrammeData(
+                                     new networkHandler().getModuleById(
+                                        "-87fb9507-a6dd-41aa-b924-2f15eca3b7ae"));
+        String expected = "No Id";
+        String actual = tested.getId();
+        assertEquals(expected, actual);
+
+        expected = "No groupId";
+        actual = tested.getGroupId();
+        assertEquals(expected, actual);
+
+        String expectedEn = "No name";
+        String actualEn = tested.getName().get("en");
+        String expectedFi = "No name";
+        String actualFi = tested.getName().get("fi");
+        assertEquals(expectedEn, actualEn);
+        assertEquals(expectedFi, actualFi);
+
     }
 }

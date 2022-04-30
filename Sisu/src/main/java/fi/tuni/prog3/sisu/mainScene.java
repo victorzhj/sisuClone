@@ -1,27 +1,10 @@
 package fi.tuni.prog3.sisu;
-import fi.tuni.prog3.sisu.settingsDialog;
-import fi.tuni.prog3.sisu.settingsDialog.selectedData;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.application.Platform;
-import javafx.geometry.Pos;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-
-import static java.lang.System.out;
-
 import java.util.TreeMap;
 
 
@@ -29,7 +12,6 @@ import java.util.TreeMap;
 public class mainScene {
     
     private Stage stage;
-    private Scene scene;
     private TreeView<treeItems> degreeProgram =new TreeView<treeItems>();
     private settingsDialog.selectedData selected;
     private settingsDialog settings;
@@ -97,9 +79,7 @@ public class mainScene {
         if ( isDegree ){
             module = new ModuleData(
                 new networkHandler().getModuleByGroupId(selected.getStudyModuleId()));
-    
-            System.out.println("test");
-    
+        
     
             degreedata = new DegreeProgrammeData(
                 new networkHandler().getModuleByGroupId(selected.getStudyModuleId()));
@@ -108,41 +88,17 @@ public class mainScene {
         else {
             module = new ModuleData(
                 new networkHandler().getModuleByGroupId(selected.getDegreeProgrammeId()));
-    
-            System.out.println("test");
-    
+        
     
             degreedata = new DegreeProgrammeData(
                 new networkHandler().getModuleByGroupId(selected.getDegreeProgrammeId()));
         }
-        
-
-
-/*
-        System.out.println("degree data:");
-        System.out.println(degreedata.getName().get("fi"));
-        System.out.println(degreedata.getId());
-        System.out.println("Alimoduulien määrä: " + degreedata.getModules().size());
-        
-        
-        System.out.println("module data:");
-        System.out.println(module.getName().get("fi"));
-        System.out.println(module.getId());
-        System.out.println("Alikurssien määrä: " + module.getWhenSubModuleAreCourses().size());
-        System.out.println("Alimoduulien määrä: " + module.getWhenSubModuleAreModules().size()); 
-       */ 
         
         // Only modules under
         if ( module.getWhenSubModuleAreCourses().isEmpty() ) {
             TreeMap<String, ModuleData> modules = module.getWhenSubModuleAreModules();
             rootItem.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false));    
 
-            // Make root item (degree) for treeview
-            System.out.println("alimoduulien avaimet:");
-            for ( var mod : modules.values() ) {
-                System.out.println(mod.getName().get("fi"));
-            }
-            //rootItem.getChildren().add(getSubModules(rootItem, modules));
             getSubModules(rootItem, modules);
 
         } 
@@ -150,9 +106,6 @@ public class mainScene {
         // Only courses under
         else {
             rootItem.setValue(new treeItems(degreedata.getName().get("fi"), selected.getStudyModuleId(), false, true));
-            
-            //TreeItem<treeItems> subCourses = getSubCourses(rootItem, module.getWhenSubModuleAreCourses());
-            //rootItem.getChildren().add(subCourses);
 
             getSubCourses(rootItem, module.getWhenSubModuleAreCourses());
         }
@@ -175,8 +128,6 @@ public class mainScene {
                 branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false));
                 root.getChildren().add(branch);
 
-                //TreeItem<treeItems> subBranch = new TreeItem<treeItems>();
-                //branch.getChildren().add(getSubModules(subBranch, module.getWhenSubModuleAreModules()));
                 getSubModules(branch, module.getWhenSubModuleAreModules());
 
                 
@@ -186,16 +137,12 @@ public class mainScene {
             else if ( module.getWhenSubModuleAreModules().isEmpty() ) {
                 branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false));
                 root.getChildren().add(branch);
-                //TreeItem<treeItems> subBranch = new TreeItem<treeItems>();
-
-                //branch.getChildren().add(getSubCourses(branch, module.getWhenSubModuleAreCourses()));
 
                 getSubCourses(branch, module.getWhenSubModuleAreCourses());
                 
             }
 
         }
-        System.out.println("jippii");
     }
 
 
@@ -207,7 +154,6 @@ public class mainScene {
             branch.setValue(new treeItems(course.getName().get("fi"), course.getCode(), true, true));
             root.getChildren().add(branch);
         }
-        //return root;
 
     }
 
@@ -232,12 +178,10 @@ public class mainScene {
             this.stage.setScene(settings.getScene());
         });
 
-/*        selected = settings.getSelectedData();
-        System.out.println(selected.getStudName()); */
+
 
         mainStage.sceneProperty().addListener((observable, oldScene, newScene) -> {
-            //selected = settings.getSelectedData();
-            //System.out.println(selected.getStudName());
+
 
             if ( mainStage.getScene() == settings.getScene() ){
                 return;
@@ -249,12 +193,6 @@ public class mainScene {
 
             String degreeProgrammeId = selected.getDegreeProgrammeId();
 
-            System.out.println("studName: " + selected.getStudName());
-            System.out.println("studNumber: " + selected.getStudNumber());
-            System.out.println("degreeProgrammeName: " + selected.getDegreeProgrammeName());
-            System.out.println("degreeProgrammeId: " + selected.getDegreeProgrammeId());
-            System.out.println("studyModuleName: " + selected.getStudyModuleName());
-            System.out.println("studyModuleId: " + selected.getStudyModuleId());
 
             if ( degreeProgrammeId.equals("No DegreeProgramme") ) {
                 //käytä degreeprogrammedataa

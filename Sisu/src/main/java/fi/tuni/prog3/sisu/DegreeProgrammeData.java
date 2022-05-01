@@ -183,7 +183,7 @@ public class DegreeProgrammeData {
 
     /** 
      * Returns the degreeProgramme id.
-     * @return String The degree id
+     * @return String The degree id. Returns "No Id" if module has no id.
      */
     public String getId() {
         return this.id;
@@ -191,7 +191,7 @@ public class DegreeProgrammeData {
 
     /** 
      * Returns the degreeProgramme groupId.
-     * @return String The degree groupId
+     * @return String The degree groupId. Returns "No groupId" if module has no groupId.
      */
     public String getGroupId() {
         return this.groupId;
@@ -200,7 +200,7 @@ public class DegreeProgrammeData {
     /** 
      * Return a treeMap containing the degree name in finnish and english. The only key values are "en" and "fi".
      * Key = Language(en or fi), value = name.
-     * @return TreeMap<String, String> degree name in finnish and english.
+     * @return TreeMap<String, String> degree name in finnish and english. Returns "No name" if there are no name.
      */
     public TreeMap<String, String> getName() {
         return this.name;

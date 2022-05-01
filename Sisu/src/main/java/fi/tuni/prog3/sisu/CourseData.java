@@ -59,13 +59,13 @@ public class CourseData {
         this.credits = "0";
         this.code = "No code";
         this.name.put("en", "No name");
-        this.name.put("fi", "Ei nimeä");
+        this.name.put("fi", "No name");
         this.outcomes.put("en", "No outcomes text");
-        this.outcomes.put("fi", "Ei tulos tekstiä");
+        this.outcomes.put("fi", "No outcomes text");
         this.additional.put("en", "No additional text");
-        this.additional.put("fi", "Ei lisättävää tekstiä");
+        this.additional.put("fi", "No additional text");
         this.content.put("en", "No content text");
-        this.content.put("fi", "Ei sisältö tekstiä");
+        this.content.put("fi", "No content text");
     }
 
     /**
@@ -231,7 +231,7 @@ public class CourseData {
     /** 
      * Return a treeMap containing the course name in finnish and english. The only key values are "en" and "fi".
      * Key = Language(en or fi), value = name.
-     * @return TreeMap<String, String> Course name in finnish and english.
+     * @return TreeMap<String, String> Course name in finnish and english. Returns "No name" if there are no name.
      */
     public TreeMap<String, String> getName() {
         return name;
@@ -239,7 +239,7 @@ public class CourseData {
 
     /** 
      * Returns course's code
-     * @return String The course code.
+     * @return String The course code. Returns "No code" if no code.
      */
     public String getCode() {
         return code;
@@ -250,7 +250,7 @@ public class CourseData {
      * Returns the amount of credits you can get from the course. 
      * If the credits have lowerbound and upperbound the format is going to be "lowebound-upperbound" e.g "2-3".
      * Else the format is going to be "credits amount", e.g "5"
-     * @return String The amount of credits you can acquire from the course. 
+     * @return String The amount of credits you can acquire from the course. Retruns "0" if no credits.
      */
     public String getCredits() {
         return credits;
@@ -259,7 +259,7 @@ public class CourseData {
     
     /** 
      * Returns the groupId of the course.
-     * @return String The course groupId
+     * @return String The course groupId.
      */
     public String getGroupId() {
         return groupId;
@@ -269,7 +269,7 @@ public class CourseData {
     /** 
      * Return a treeMap containing the course outcome texts in finnish and english. The only key values are "en" and "fi".
      * Key = Language(en or fi), value = outcome text
-     * @return TreeMap<String, String> Course outcome texts in finnish and english.
+     * @return TreeMap<String, String> Course outcome texts in finnish and english. Returns "No outcomes text" if no outcomes.
      */
     public TreeMap<String, String> getOutcomes() {
         return outcomes;
@@ -279,7 +279,7 @@ public class CourseData {
     /**
      * Return a treeMap containing the course content texts in finnish and english. The only key values are "en" and "fi".
      * Key = Language(en or fi), value = content text
-     * @return TreeMap<String, String> containing the content texts.
+     * @return TreeMap<String, String> containing the content texts. Returns "No content text" if no outcomes.
      */
     public TreeMap<String, String> getContent() {
         return content;
@@ -288,7 +288,7 @@ public class CourseData {
     /**
      * Return a treeMap containing the course additional texts in finnish and english. The only key values are "en" and "fi".
      * Key = Language(en or fi), value = additional text
-     * @return TreeMap<String, String> containing the additional texts.
+     * @return TreeMap<String, String> containing the additional texts. Returns "No additional text" if no outcomes.
      */
     public TreeMap<String, String> getAdditional() {
         return additional;

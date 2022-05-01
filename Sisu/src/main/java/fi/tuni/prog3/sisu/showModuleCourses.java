@@ -22,7 +22,7 @@ public class showModuleCourses {
         for (var value : courses.values()) {
             Button course = new Button();
             course.setMinWidth(300);
-            if (value.getName().get("fi").equals("Ei nimeä")) {
+            if (value.getName().get("fi").equals("No name")) {
                 course.setText(value.getName().get("fi"));
             } else {
                 course.setText(value.getName().get("en"));

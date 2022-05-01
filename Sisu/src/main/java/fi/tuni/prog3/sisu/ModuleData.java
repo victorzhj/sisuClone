@@ -225,7 +225,7 @@ public class ModuleData{
 
     /** 
      * Return module's id.
-     * @return String The module id.
+     * @return String The module id. Returns "No Id" if module has no id.
      */
     public String getId() {
         return this.id;
@@ -233,7 +233,7 @@ public class ModuleData{
 
     /** 
      * Return module's groudId.
-     * @return String The module groudId.
+     * @return String The module groudId. Returns "No groupId" if module has no groupId.
      */
     public String getGroupId() {
         return this.groupId;
@@ -245,7 +245,7 @@ public class ModuleData{
      * This is only when the module is studyModule type.
      * If it's groupingModule type it will return empty string.
      * This is why it's recommended to first check the module type with getModuleType method.
-     * @return String The module's target credits if module is studyModule.
+     * @return String The module's target credits if module is studyModule. Returns "No target credits" if module has no target credits.
      */
     public String getTargetCredits() {
         if (this.moduleType.equals("StudyModule")) {
@@ -259,7 +259,7 @@ public class ModuleData{
     /** 
      * Return a treeMap containing the modules name in finnish and english. The only key values are "en" and "fi".
      * Key = Language(en or fi), value = name.
-     * @return TreeMap<String, String> module name in finnish and english.
+     * @return TreeMap<String, String> module name in finnish and english. Returns "No name" if there are no name.
      */
     public TreeMap<String, String> getName() {
         return this.name;
@@ -288,7 +288,7 @@ public class ModuleData{
 
     /**
      * Return this module's type, ether studyModule or groupingModule.
-     * @return String module's moduleType.
+     * @return String module's moduleType. Returns "No module type" if module doesn't have a type.
      */
     public String getModuleType() {
         return this.moduleType;

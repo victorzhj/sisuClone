@@ -196,11 +196,13 @@ public class mainScene {
         backButton.setText("back to settings");
         Scene scene1 = new Scene(group);
 
+        // Create StackPane to show buttons of courses.
         StackPane showAllCourses = new StackPane();
         showAllCourses.setMinHeight(400);
         showAllCourses.setMinWidth(400);
         showAllCourses.setStyle("-fx-background-color: grey;");
         
+        // Create StackPane to show single course information.
         StackPane showCourseInfo = new StackPane();
         showCourseInfo.setMinSize(300, 400);
         showAllCourses.setStyle("-fx-background-color: grey;");
@@ -215,8 +217,10 @@ public class mainScene {
             this.stage.setScene(settings.getScene());
         });
 
+        // Add a listener to show that modules courses.
         degreeProgram.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
             treeItems thisNode = newValue.getValue();
+            // Check if the clicked item in the TreeView is a module and not a course.
             if (thisNode.getCourseSubModules()) {
                 showAllCourses.getChildren().clear();
                 ListView<Button> thisCourseInfo = showModuleCourses.display(newValue.getValue().getThisModule().getWhenSubModuleAreCourses(), showCourseInfo);

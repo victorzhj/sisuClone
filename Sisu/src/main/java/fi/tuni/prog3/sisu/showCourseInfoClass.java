@@ -1,11 +1,21 @@
 package fi.tuni.prog3.sisu;
+
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
+/**
+ * Class that shows selected course's information.
+ */
 public class showCourseInfoClass {
+    /**
+     * Display given course information. Displayed informations are 
+     * name, credits amount, content, outcome and additional information.
+     * @param course The given course which information you want to display.
+     * @param pane The StackPane where the informations are displayed.
+     */
     public static void display(CourseData course, StackPane pane) {
         VBox courseInfo = new VBox();
         courseInfo.setMaxWidth(350);
@@ -39,10 +49,10 @@ public class showCourseInfoClass {
         } else {
             additional = course.getAdditional().get("fi");
         }
-        webEngine.loadContent("<div> <h2>" + "Content </h2>" + content + "</div" + 
-                                  "<div> <h2>" + "Outcomes </h2>" + outcome + "</div" + 
-                                  "<div> <h2>" + "Additional </h2>" + additional + "</div");
-        
+        webEngine.loadContent("<div> <h2>" + "Content </h2>" + content + "</div" +
+                "<div> <h2>" + "Outcomes </h2>" + outcome + "</div" +
+                "<div> <h2>" + "Additional </h2>" + additional + "</div");
+
         courseInfo.getChildren().addAll(nameLabel, creditsLabel, browser);
         pane.getChildren().add(courseInfo);
     }

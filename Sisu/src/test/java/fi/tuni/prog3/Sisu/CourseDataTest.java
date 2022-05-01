@@ -102,28 +102,28 @@ public class CourseDataTest {
         
                 String expectedEn = "No name";
                 String actualEn = tested.getName().get("en");
-                String expectedFi = "Ei nimeä";
+                String expectedFi = "No name";
                 String actualFi = tested.getName().get("fi");
                 assertEquals(expectedEn, actualEn);
                 assertEquals(expectedFi, actualFi);
 
                 expectedEn = "No outcomes text";
                 actualEn = tested.getOutcomes().get("en");
-                expectedFi = "Ei tulos tekstiä";
+                expectedFi = "No outcomes text";
                 actualFi = tested.getOutcomes().get("fi");
                 assertEquals(expectedEn, actualEn);
                 assertEquals(expectedFi, actualFi);
                 
                 expectedEn = "No additional text";
                 actualEn = tested.getAdditional().get("en");
-                expectedFi = "Ei lisättävää tekstiä";
+                expectedFi = "No additional text";
                 actualFi = tested.getAdditional().get("fi");
                 assertEquals(expectedEn, actualEn);
                 assertEquals(expectedFi, actualFi);
                 
                 expectedEn = "No content text";
                 actualEn = tested.getContent().get("en");
-                expectedFi = "Ei sisältö tekstiä";
+                expectedFi = "No content text";
                 actualFi = tested.getContent().get("fi");
                 assertEquals(expectedEn, actualEn);
                 assertEquals(expectedFi, actualFi);

@@ -1,6 +1,7 @@
 package fi.tuni.prog3.sisu;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.stage.Stage;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -18,84 +19,6 @@ public class mainScene {
     private TreeView<treeItems> degreeProgram =new TreeView<treeItems>();
     private settingsDialog.selectedData selected;
     private settingsDialog settings;
-
-
-    /**
-     * Hidden class that represents stored data in treeview items
-     */
-    private class treeItems{
-        treeItems(String name, String id, Boolean isLeaf,Boolean HasNoStudyModules, Boolean courseSubModules){
-            this.name = name;
-            this.id = id;
-            this.isLeaf = isLeaf;
-            this.hasNoStudyModules = HasNoStudyModules;
-            this.courseSubModules = courseSubModules;
-        }
-
-        treeItems(String name, String id, Boolean isLeaf,Boolean HasNoStudyModules, Boolean courseSubModules, ModuleData thisModule){
-            this.name = name;
-            this.id = id;
-            this.isLeaf = isLeaf;
-            this.hasNoStudyModules = HasNoStudyModules;
-            this.courseSubModules = courseSubModules;
-            this.thisModule = thisModule;
-        }
-        private String name;
-        private String id;
-        private Boolean isLeaf;
-        private Boolean hasNoStudyModules;
-        private Boolean courseSubModules;
-        private ModuleData thisModule;
-        /**
-         * Returns the groupId of the item 
-         * @return String group of the item
-         */
-        public String getId() {
-            return id;
-        }
-        /**
-         * Returns the name of the item
-         * @return String name of the item
-         */
-        public String getName() {
-            return name;
-        }
-        /**
-         * Returns true if the item has no children or false if it does
-         * @return Boolean  True if is leaf, False if is not leaf
-         */
-        public Boolean getIsLeaf() {
-            return isLeaf;
-        }
-        /**
-         * Returns True if the item is studyModule False if it isn't
-         * @return Boolean True if is studyModule, False if isn't
-         */
-        public Boolean gethasNoStudyModules() {
-            return hasNoStudyModules;
-        }
-        /**
-         * Returns True if items submodules are courses. Otherwise False.
-         * @return Boolean True if items submodules are courses. Otherwise False.
-         */
-        public Boolean getCourseSubModules() {
-            return courseSubModules;
-        }
-        /**
-         * Returns this TreeItems module. If there are any.
-         * @return Returns this TreeItems module. If there are any.
-         */
-        public ModuleData getThisModule() {
-            return this.thisModule;
-        }
-        @Override
-        /**
-         * Gets the name of the item
-         */
-        public String toString() {
-            return getName();
-        }
-    }
 
     private void getModuleData(settingsDialog.selectedData selected, boolean isDegree) {
 
@@ -148,7 +71,7 @@ public class mainScene {
             // No submodules or courses under module
             if ( module.getWhenSubModuleAreModules().isEmpty() && module.getWhenSubModuleAreCourses().isEmpty() ) {
                 branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), true, true, false));
-                root.getChildren().add(branch);
+                //root.getChildren().add(branch);
             }
 
             // Only submodules under branch
@@ -166,7 +89,7 @@ public class mainScene {
                 branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, true, module));
                 root.getChildren().add(branch);
 
-                getSubCourses(branch, module.getWhenSubModuleAreCourses());
+                //getSubCourses(branch, module.getWhenSubModuleAreCourses());
                 
             }
 
@@ -223,7 +146,7 @@ public class mainScene {
             // Check if the clicked item in the TreeView is a module and not a course.
             if (thisNode.getCourseSubModules()) {
                 showAllCourses.getChildren().clear();
-                ListView<Button> thisCourseInfo = showModuleCourses.display(newValue.getValue().getThisModule().getWhenSubModuleAreCourses(), showCourseInfo);
+                ListView<CheckBox> thisCourseInfo = new showModuleCourses().display(newValue, newValue.getValue().getThisModule().getWhenSubModuleAreCourses(), showCourseInfo);
                 showAllCourses.getChildren().add(thisCourseInfo);
             }
         });

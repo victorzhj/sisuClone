@@ -21,7 +21,6 @@ public class showModuleCourses {
     public ListView<CheckBox> display(TreeItem<treeItems> subroot, TreeMap<String, CourseData> courses, StackPane courseInfoPane) {
         ListView<CheckBox> allCourses = new ListView<CheckBox>();
         
-
         for (var value : courses.values()) {
             CheckBox course = new CheckBox();
             course.setMinWidth(300);
@@ -32,11 +31,13 @@ public class showModuleCourses {
             }
             allCourses.getItems().add(course);
             
+            // Set hover property
             course.setOnMouseEntered(event -> {
                 courseInfoPane.getChildren().clear();
                 showCourseInfoClass.display(value, courseInfoPane);
             });
 
+            // Set on click property
             treeItems temp = new treeItems(value.getName().get("fi"), value.getGroupId(), true, false, false);
             TreeItem<treeItems> branch = new TreeItem<treeItems>(temp);
             course.setOnMouseClicked(event -> {

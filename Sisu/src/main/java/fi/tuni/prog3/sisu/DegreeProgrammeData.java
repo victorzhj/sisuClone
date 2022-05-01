@@ -134,6 +134,7 @@ public class DegreeProgrammeData {
             if (element == null) {
                 return;
             }
+            // Use recursive to go through every module and course.
             if (element.isJsonObject()) {
                 JsonElement whenRule = element.getAsJsonObject().get("rule");
                 JsonElement whenRules = element.getAsJsonObject().get("rules");

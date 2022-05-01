@@ -118,6 +118,7 @@ public class ModuleData{
     private void setTargetCredits(){
         try {
             JsonElement tempType = moduleJson.get("type");
+            // When type is not StudyModule it is GroupingModule
             if (tempType == null || !tempType.isJsonPrimitive() || !tempType.getAsString().equals("StudyModule")) {
                 this.moduleType = "GroupingModule";
                 return;
@@ -192,6 +193,7 @@ public class ModuleData{
      */
     private void setRuleHelper(JsonElement element) {
         try{
+            // Use recursive to go through every module and course.
             if (element.isJsonObject()) {
                 JsonElement whenRule = element.getAsJsonObject().get("rule");
                 JsonElement whenRules = element.getAsJsonObject().get("rules");

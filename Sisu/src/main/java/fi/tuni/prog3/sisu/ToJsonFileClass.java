@@ -14,9 +14,4 @@ public class ToJsonFileClass {
         this.degreeGroupId = degreeGroupId;
         this.coursesGroupIds = completedCourses;
     }
-
-    public class course {
-        public String courseName;
-        public String groupId;
-    }
 }

@@ -14,7 +14,7 @@ import java.util.TreeMap;
 /**
  * Class representing mainscene which is opened after settings scene. 
  */
-public class mainScene {
+public class mainScene implements Runnable {
     
     private Stage stage;
     private TreeView<treeItems> degreeProgram =new TreeView<treeItems>();
@@ -137,7 +137,8 @@ public class mainScene {
     public mainScene(Stage mainStage){
 
         this.stage = mainStage;
-
+        Thread fillTreeView = new Thread(this);
+        fillTreeView.start();
         HBox group = new HBox(degreeProgram);
         group.setMinHeight(400);
         group.setMinWidth(1000);
@@ -190,9 +191,18 @@ public class mainScene {
         });
 
         // Listener for scene change. If moved from settingsDialog to mainScene, update treeview
-        mainStage.sceneProperty().addListener((observable, oldScene, newScene) -> {
+        
 
-            if ( mainStage.getScene() == settings.getScene() ){
+    
+
+    this.stage.show();
+    }
+
+    @Override
+    public void run() {
+        this.stage.sceneProperty().addListener((observable, oldScene, newScene) -> {
+
+            if ( this.stage.getScene() == settings.getScene() ){
                 return;
             }
 
@@ -211,9 +221,6 @@ public class mainScene {
                 getModuleData(selected, false);
             } 
     });
-
-    
-
-    this.stage.show();
+        
     }
 }

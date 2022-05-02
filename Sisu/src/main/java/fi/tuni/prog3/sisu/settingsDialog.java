@@ -1,5 +1,4 @@
 package fi.tuni.prog3.sisu;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -10,7 +9,6 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
@@ -29,7 +27,7 @@ public class settingsDialog implements Runnable{
     private ProgressBar loadingBar = new ProgressBar();
     private Label errorLabel = new Label();
     private Scene settingsScene;
-    double downloadProgress = 0;
+    private double downloadProgress = 0;
     private selectedData selected = null;
 
     private Stage mainStage;
@@ -163,7 +161,7 @@ public class settingsDialog implements Runnable{
      * @param mainStage Stage from the main window to switch back to after button press
      * @param mainScene Scene from the main window to switch back to after button press
      */
-    settingsDialog(Stage mainStage, Scene mainScene){
+    public settingsDialog(Stage mainStage, Scene mainScene){
 
         Thread fillTreeView = new Thread(this);
         fillTreeView.start();
@@ -189,7 +187,7 @@ public class settingsDialog implements Runnable{
         //Button handler event. Reads data in every field and generates selected data toReturnData that will be passed to other parts of the program
         confirmButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent event){
+            private void handle(ActionEvent event){
                 selectedData data;
                 if(degreeProgramsList.getSelectionModel().isEmpty()){
                     return;

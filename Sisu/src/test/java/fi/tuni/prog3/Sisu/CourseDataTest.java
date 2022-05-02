@@ -1,6 +1,7 @@
 package fi.tuni.prog3.Sisu;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -70,7 +71,15 @@ public class CourseDataTest {
 
     @Test
     public void testGetAdditional() {
-        
+        CourseData tested = new CourseData(
+                            new networkHandler().getCourseByGroupId(
+                                "tut-cu-g-45474"));
+        String expectedEn = "<b>Partial completions of the course must be carried out during the same implementation round.</b><br /><br />";
+        String actualEn = tested.getAdditional().get("en");
+        assertEquals(expectedEn, actualEn);
+        String expectedFi = "<b>Osasuoritusten pitää liittyä samaan toteutuskertaan.</b><br />";
+        String actualFi = tested.getAdditional().get("fi");
+        assertEquals(expectedFi, actualFi);
     }
 
     @Test
@@ -81,6 +90,15 @@ public class CourseDataTest {
         String expected = "EE.010 : tut-cu-g-45460 : Signaalit ja mittaaminen";
         String actual = tested.toString();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void setAndGetComplited() {
+        CourseData tested = new CourseData(
+                            new networkHandler().getCourseByGroupId(
+                                "tut-cu-g-45460"));
+        tested.setCompleted(true);
+        assertTrue(tested.getComplited());
     }
 
     @Test

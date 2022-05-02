@@ -202,15 +202,15 @@ public class mainScene implements Runnable {
             List<String> tempList = new ArrayList<>(listOfCompletedCourses);
             if (selected.getDegreeProgrammeName().equals("No DegreeProgramme")) {
                 temp = new ToJsonFileClass(selected.getStudName(), selected.getStudNumber(), 
-                selected.getStudyModuleName(), tempList);
+                selected.getStudyModuleId(), tempList);
             } else {
                 temp = new ToJsonFileClass(selected.getStudName(), selected.getStudNumber(), 
-                selected.getDegreeProgrammeName(), tempList);
+                selected.getDegreeProgrammeId(), tempList);
             }
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             try {
-                String studentName = selected.getStudName().replaceAll(" ", "_");
-                FileWriter writer = new FileWriter(new File(studentName+"_courses.json"));
+                String studentNumber = selected.getStudNumber().replaceAll(" ", "_");
+                FileWriter writer = new FileWriter(new File(studentNumber+"_courses.json"));
                 gson.toJson(temp, writer);
                 writer.flush();
                 writer.close();

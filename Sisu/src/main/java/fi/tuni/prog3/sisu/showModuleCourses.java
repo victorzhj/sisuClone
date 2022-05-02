@@ -1,6 +1,8 @@
 package fi.tuni.prog3.sisu;
 
 import java.util.TreeMap;
+import java.util.TreeSet;
+
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
@@ -18,7 +20,7 @@ public class showModuleCourses {
      * @param courseInfoPane The StackPane where the checkboxes are displayed.
      * @return ListView<Button> Containing all the checkboxes.
      */
-    public ListView<CheckBox> display(TreeItem<treeItems> subroot, TreeMap<String, CourseData> courses, StackPane courseInfoPane) {
+    public ListView<CheckBox> display(TreeItem<treeItems> subroot, TreeMap<String, CourseData> courses, StackPane courseInfoPane, TreeSet<String> listOfCompletedCourses) {
         ListView<CheckBox> allCourses = new ListView<CheckBox>();
         
         for (var value : courses.values()) {
@@ -56,9 +58,11 @@ public class showModuleCourses {
                 if (course.isSelected()) {
                     subroot.getChildren().add(branch);
                     value.setCompleted(true);
+                    listOfCompletedCourses.add(value.getGroupId());
                 } else if (!course.isSelected()) {
                     subroot.getChildren().remove(branch);
                     value.setCompleted(false);
+                    listOfCompletedCourses.remove(value.getGroupId());
                 }
             });
 

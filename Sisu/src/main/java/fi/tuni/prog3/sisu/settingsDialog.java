@@ -187,7 +187,7 @@ public class settingsDialog implements Runnable{
         //Button handler event. Reads data in every field and generates selected data toReturnData that will be passed to other parts of the program
         confirmButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            private void handle(ActionEvent event){
+            public void handle(ActionEvent event){
                 selectedData data;
                 if(degreeProgramsList.getSelectionModel().isEmpty()){
                     return;

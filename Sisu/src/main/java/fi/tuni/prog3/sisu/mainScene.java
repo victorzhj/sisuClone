@@ -11,7 +11,9 @@ import javafx.scene.control.ListView;
 import java.util.TreeMap;
 
 
-
+/**
+ * Class representing mainscene which is opened after settings scene. 
+ */
 public class mainScene {
     
     private Stage stage;
@@ -19,6 +21,11 @@ public class mainScene {
     private settingsDialog.selectedData selected;
     private settingsDialog settings;
 
+    /**
+     * This is used to get all modules and courses under the selected degree in settingsDialog and added to treeview
+     * @param selected Contains all the information user gives in settingsDialog (name, studentnumber and degree or study module)
+     * @param isDegree Boolean value to inform if the selected is degree programme or study module
+     */
     private void getModuleData(settingsDialog.selectedData selected, boolean isDegree) {
 
         TreeItem<treeItems> rootItem = new TreeItem<treeItems>();
@@ -27,6 +34,7 @@ public class mainScene {
         ModuleData module;
         DegreeProgrammeData degreedata;
 
+        // If degree, use studyModuleId
         if ( isDegree ){
             module = new ModuleData(
                 new networkHandler().getModuleByGroupId(selected.getStudyModuleId()));
@@ -36,6 +44,7 @@ public class mainScene {
                 new networkHandler().getModuleByGroupId(selected.getStudyModuleId()));
         }
 
+        // If selected is a module, there is a degree above. Use degreeprogrammeId
         else {
             module = new ModuleData(
                 new networkHandler().getModuleByGroupId(selected.getDegreeProgrammeId()));
@@ -45,7 +54,7 @@ public class mainScene {
                 new networkHandler().getModuleByGroupId(selected.getDegreeProgrammeId()));
         }
         
-        // Only modules under
+        // Only modules under, get modules and add to treeview
         if ( module.getWhenSubModuleAreCourses().isEmpty() ) {
             TreeMap<String, ModuleData> modules = module.getWhenSubModuleAreModules();
             rootItem.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, false));    
@@ -54,7 +63,7 @@ public class mainScene {
 
         } 
 
-        // Only courses under
+        // Only courses under, add to treeview
         else {
             rootItem.setValue(new treeItems(degreedata.getName().get("fi"), selected.getStudyModuleId(), false, true, true, module));
 
@@ -62,6 +71,11 @@ public class mainScene {
         }
     }
 
+    /**
+     * Recursive function to get all submodules and courses to treeview
+     * @param root upper branch in treeview, store all modules under this
+     * @param modules all modules found under root
+     */
     private void getSubModules(TreeItem<treeItems> root, TreeMap<String, ModuleData> modules) {
 
         for ( var module : modules.values() ){
@@ -72,15 +86,14 @@ public class mainScene {
                 branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), true, true, false));
                 //root.getChildren().add(branch);
             }
-            // When it both has submodues and course.
+            // Both submodues and courses under branch.
             else if (!module.getWhenSubModuleAreModules().isEmpty() && !module.getWhenSubModuleAreCourses().isEmpty()) {
                 //branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, false));
                 branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, true, module));
                 root.getChildren().add(branch);
 
                 getSubModules(branch, module.getWhenSubModuleAreModules());
-                // Find the json course from the module courses and and the branchs to the treeview. After that store the branchs to courseData.
-                // also set the completed state to true.
+
                 //getSubCourses(branch, module.getWhenSubModuleAreCourses());
             }
 
@@ -89,24 +102,24 @@ public class mainScene {
                 branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, false));
                 root.getChildren().add(branch);
 
-                getSubModules(branch, module.getWhenSubModuleAreModules());
-
-                
+                getSubModules(branch, module.getWhenSubModuleAreModules()); 
             }
 
-            // when only courses under branch
+            // Only courses under branch
             else if ( module.getWhenSubModuleAreModules().isEmpty() ) {
                 branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, true, module));
                 root.getChildren().add(branch);
-                // Find the json course from the module courses and and the branchs to the treeview. After that store the branchs to courseData.
-                // also set the completed state to true.
-                //getSubCourses(branch, module.getWhenSubModuleAreCourses());
-                
-            }
 
+                //getSubCourses(branch, module.getWhenSubModuleAreCourses());
+            }
         }
     }
 
+    /**
+     * Stores all subcourses under branch
+     * @param root branch that has the courses under it
+     * @param courses courses under root branch
+     */
     private void getSubCourses(TreeItem<treeItems> root, TreeMap<String, CourseData> courses) {
 
         for ( var course : courses.values() ){
@@ -117,7 +130,11 @@ public class mainScene {
         }
     }
 
-    mainScene(Stage mainStage){
+    /**
+     * Constructor for mainscene
+     * @param mainStage Both scenes are used in this stage
+     */
+    public mainScene(Stage mainStage){
 
         this.stage = mainStage;
 
@@ -142,10 +159,12 @@ public class mainScene {
 
         group.getChildren().addAll(showAllCourses, showCourseInfo, backButton);
 
+        // Create settingsDialog and set it to stage
         settings = new settingsDialog(this.stage, scene1);
         this.stage.setTitle("SISU");
         this.stage.setScene(settings.getScene());
 
+        // Move back to settingsDialog
         backButton.setOnAction((event) -> {
             // Clear everything
             degreeProgram.setRoot(null);
@@ -170,26 +189,24 @@ public class mainScene {
             }
         });
 
+        // Listener for scene change. If moved from settingsDialog to mainScene, update treeview
         mainStage.sceneProperty().addListener((observable, oldScene, newScene) -> {
-
 
             if ( mainStage.getScene() == settings.getScene() ){
                 return;
             }
 
-
             // get infomation of the selected degree programme or study module 
             selected = settings.getSelectedData();
-
             String degreeProgrammeId = selected.getDegreeProgrammeId();
 
-
+            // Selected is a degree
             if ( degreeProgrammeId.equals("No DegreeProgramme") ) {
-                //käytä degreeprogrammedataa
 
                 getModuleData(selected, true); 
             }
 
+            // Selected is a module
             else {
                 getModuleData(selected, false);
             } 

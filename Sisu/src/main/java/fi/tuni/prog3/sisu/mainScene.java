@@ -74,13 +74,11 @@ public class mainScene {
             }
 
             else if (!module.getWhenSubModuleAreModules().isEmpty() && !module.getWhenSubModuleAreCourses().isEmpty()) {
-                branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, false));
+                //branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, false));
+                branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, true, module));
                 root.getChildren().add(branch);
 
                 getSubModules(branch, module.getWhenSubModuleAreModules());
-
-                branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, true, module));
-                root.getChildren().add(branch);
             }
 
             // Only submodules under branch

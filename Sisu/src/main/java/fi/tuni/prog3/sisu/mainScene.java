@@ -148,6 +148,7 @@ public class mainScene implements Runnable {
      */
     public mainScene(Stage mainStage){
         TreeSet<String> listOfCompletedCourses = new TreeSet<>();
+        degreeProgram.setMinWidth(400);
 
         this.stage = mainStage;
         Thread fillTreeView = new Thread(this);

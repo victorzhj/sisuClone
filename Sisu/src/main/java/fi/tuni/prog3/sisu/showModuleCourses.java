@@ -42,7 +42,7 @@ public class showModuleCourses {
 
             // Check if branch has already been added before
             if (value.getTreeItem() == null) {
-                treeItems temp = new treeItems(value.getName().get("fi"), value.getGroupId(), true, false, false);
+                treeItems temp = new treeItems("%: " + value.getName().get("fi"), value.getGroupId(), true, false, false);
                 branch = new TreeItem<treeItems>(temp);
                 // Add the branch to object memory.
                 value.setTreeItem(branch);

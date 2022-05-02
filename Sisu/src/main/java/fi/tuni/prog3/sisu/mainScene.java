@@ -72,13 +72,16 @@ public class mainScene {
                 branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), true, true, false));
                 //root.getChildren().add(branch);
             }
-
+            // When it both has submodues and course.
             else if (!module.getWhenSubModuleAreModules().isEmpty() && !module.getWhenSubModuleAreCourses().isEmpty()) {
                 //branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, false));
                 branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, true, module));
                 root.getChildren().add(branch);
 
                 getSubModules(branch, module.getWhenSubModuleAreModules());
+                // Find the json course from the module courses and and the branchs to the treeview. After that store the branchs to courseData.
+                // also set the completed state to true.
+                //getSubCourses(branch, module.getWhenSubModuleAreCourses());
             }
 
             // Only submodules under branch
@@ -95,14 +98,14 @@ public class mainScene {
             else if ( module.getWhenSubModuleAreModules().isEmpty() ) {
                 branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, true, module));
                 root.getChildren().add(branch);
-
+                // Find the json course from the module courses and and the branchs to the treeview. After that store the branchs to courseData.
+                // also set the completed state to true.
                 //getSubCourses(branch, module.getWhenSubModuleAreCourses());
                 
             }
 
         }
     }
-
 
     private void getSubCourses(TreeItem<treeItems> root, TreeMap<String, CourseData> courses) {
 

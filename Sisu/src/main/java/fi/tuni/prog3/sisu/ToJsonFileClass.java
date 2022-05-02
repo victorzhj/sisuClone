@@ -8,7 +8,7 @@ public class ToJsonFileClass {
     public String degreeGroupId;
     public List<String> coursesGroupIds; 
 
-    ToJsonFileClass(String studentName, String studentNumber, String degreeGroupId, List<String> completedCourses) {
+    public ToJsonFileClass(String studentName, String studentNumber, String degreeGroupId, List<String> completedCourses) {
         this.studentName = studentName;
         this.studentNumber = studentNumber;
         this.degreeGroupId = degreeGroupId;

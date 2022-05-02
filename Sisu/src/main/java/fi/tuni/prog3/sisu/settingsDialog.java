@@ -263,6 +263,11 @@ public class settingsDialog implements Runnable{
                     try (Scanner myReader = new Scanner(file)) {
                         Gson gson = new Gson();
                         ToJsonFileClass studentData = gson.fromJson(new FileReader(file), ToJsonFileClass.class);
+                        if (studentData.getStudentNumber() == null) {
+                            errorLabel.setText("Wrong file format");
+                            settingsGrid.add(errorLabel, 0, 4,1,1);
+                            return;
+                        }
                         if (studentData.getType().equals("degreeProgramme")) {
                             data = new selectedData(studentData.getStudentName(), studentData.getStudentNumber(), "", studentData.getDegreeGroupId(),
                             "", "", studentData.getCoursesGroupIds());
@@ -275,6 +280,9 @@ public class settingsDialog implements Runnable{
                     } catch (FileNotFoundException e1) {
                         e1.printStackTrace();
                     }
+                } else {
+                    errorLabel.setText("File has to be JSON");
+                    settingsGrid.add(errorLabel, 0, 4,1,1);
                 }
             }
         });

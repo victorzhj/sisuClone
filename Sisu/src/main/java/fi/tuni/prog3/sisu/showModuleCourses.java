@@ -30,23 +30,42 @@ public class showModuleCourses {
                 course.setText(value.getName().get("en"));
             }
             allCourses.getItems().add(course);
-            
+
+            // Check if it has been checkmarked before switching panels.
+            if (value.getComplited()) {
+                course.setSelected(true);
+            } else if (!value.getComplited()) {
+                course.setSelected(false);
+            }
+
+            TreeItem<treeItems> branch;
+
+            // Check if branch has already been added before
+            if (value.getTreeItem() == null) {
+                treeItems temp = new treeItems(value.getName().get("fi"), value.getGroupId(), true, false, false);
+                branch = new TreeItem<treeItems>(temp);
+                // Add the branch to object memory.
+                value.setTreeItem(branch);
+            } else {
+                // If has been added before. Get the branch from the object memory.
+                branch = value.getTreeItem();
+            }
+
+            // Set on click property
+            course.setOnMouseClicked(event -> {
+                if (course.isSelected()) {
+                    subroot.getChildren().add(branch);
+                    value.setCompleted(true);
+                } else if (!course.isSelected()) {
+                    subroot.getChildren().remove(branch);
+                    value.setCompleted(false);
+                }
+            });
+
             // Set hover property
             course.setOnMouseEntered(event -> {
                 courseInfoPane.getChildren().clear();
                 showCourseInfoClass.display(value, courseInfoPane);
-            });
-
-            // Set on click property
-            treeItems temp = new treeItems(value.getName().get("fi"), value.getGroupId(), true, false, false);
-            TreeItem<treeItems> branch = new TreeItem<treeItems>(temp);
-            course.setOnMouseClicked(event -> {
-                
-                if (course.isSelected()) {
-                    subroot.getChildren().add(branch); 
-                } else if (!course.isSelected()) {
-                    subroot.getChildren().remove(branch);
-                }
             });
         }
         return allCourses;

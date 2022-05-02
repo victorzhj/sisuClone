@@ -6,6 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import javafx.scene.control.TreeItem;
+
 /**
  * A class representing a Tampere university course. 
  */
@@ -14,6 +16,8 @@ public class CourseData {
     private String code;
     private String credits;
     private String groupId;
+    private boolean completed;
+    private TreeItem<treeItems> branch;
 
     // key = language, value = name
     private TreeMap<String, String> name;
@@ -66,6 +70,7 @@ public class CourseData {
         this.additional.put("fi", "No additional text");
         this.content.put("en", "No content text");
         this.content.put("fi", "No content text");
+        this.completed = false;
     }
 
     /**
@@ -227,7 +232,38 @@ public class CourseData {
         }
     }
 
-    
+    /**
+     * Method is used to set the course as completed if it is.
+     * @param completed boolean value of if completed. True if completed and False if not.
+     */
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    /**
+     * Method used to check if the course has been complited.
+     * @return Return True if completed and False if hasn't been complited.
+     */
+    public boolean getComplited() {
+        return this.completed;
+    }
+
+    /**
+     * Method used to store the TreeItem that represents this course.
+     * @param branch The TreeItem that represents this course.
+     */
+    public void setTreeItem(TreeItem<treeItems> branch) {
+        this.branch = branch;
+    }
+
+    /**
+     * Methods returns the TreeItem that represents this course.
+     * @return TreeItem<treeItems> The TreeItem that represents this course. Returns null if no TreeItem
+     */
+    public TreeItem<treeItems> getTreeItem() {
+        return this.branch;
+    }
+
     /** 
      * Return a treeMap containing the course name in finnish and english. The only key values are "en" and "fi".
      * Key = Language(en or fi), value = name.

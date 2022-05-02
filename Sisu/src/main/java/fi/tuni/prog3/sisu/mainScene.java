@@ -136,17 +136,26 @@ public class mainScene {
         this.stage.setScene(settings.getScene());
 
         backButton.setOnAction((event) -> {
+            // Clear everything
+            degreeProgram.setRoot(null);
+            showAllCourses.getChildren().clear();
+            showCourseInfo.getChildren().clear();
             this.stage.setScene(settings.getScene());
         });
-
+        
         // Add a listener to show that modules courses.
         degreeProgram.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
-            treeItems thisNode = newValue.getValue();
-            // Check if the clicked item in the TreeView is a module and not a course.
-            if (thisNode.getCourseSubModules()) {
-                showAllCourses.getChildren().clear();
-                ListView<CheckBox> thisCourseInfo = new showModuleCourses().display(newValue, newValue.getValue().getThisModule().getWhenSubModuleAreCourses(), showCourseInfo);
-                showAllCourses.getChildren().add(thisCourseInfo);
+            
+            if (newValue != null) {
+                treeItems thisNode = newValue.getValue();
+                // Check if the clicked item in the TreeView is a module and not a course.
+                if (thisNode.getCourseSubModules()) {
+                    showAllCourses.getChildren().clear();
+                    ListView<CheckBox> thisCourseInfo = new showModuleCourses().display(newValue, newValue.getValue().getThisModule().getWhenSubModuleAreCourses(), showCourseInfo);
+                    showAllCourses.getChildren().add(thisCourseInfo);
+                } else {
+                    showAllCourses.getChildren().clear();
+                }
             }
         });
 

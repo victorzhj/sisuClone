@@ -27,9 +27,9 @@ public class showModuleCourses {
             CheckBox course = new CheckBox();
             course.setMinWidth(300);
             if (value.getName().get("fi").equals("No name")) {
-                course.setText(value.getName().get("fi"));
-            } else {
                 course.setText(value.getName().get("en"));
+            } else {
+                course.setText(value.getName().get("fi"));
             }
             allCourses.getItems().add(course);
 

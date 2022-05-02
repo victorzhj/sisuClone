@@ -158,6 +158,7 @@ public class mainScene implements Runnable {
         group.setMinWidth(1000);
 
         VBox buttonBox = new VBox();
+        buttonBox.setMinWidth(100);
 
         Button backButton = new Button();
         backButton.setPrefSize(100, 50);

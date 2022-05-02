@@ -1,4 +1,6 @@
 package fi.tuni.prog3.sisu;
+import java.io.File;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -12,7 +14,22 @@ import javafx.scene.control.TreeView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
+import java.awt.Desktop;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import com.google.gson.Gson;
+
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
 /**
  * Class that represents the start menu of the Sisu application
@@ -21,12 +38,14 @@ public class settingsDialog implements Runnable{
     private TreeView<treeItems> degreeProgramsList =new TreeView<treeItems>();
     private networkHandler networker = new networkHandler();
     private Button confirmButton = new Button();
+    private Button selectFileButton = new Button();
     private TextField nameField = new TextField();
     private TextField studentNumber = new TextField();
     private GridPane settingsGrid = new GridPane();
     private ProgressBar loadingBar = new ProgressBar();
     private Label errorLabel = new Label();
     private Scene settingsScene;
+    private FileChooser fileChooser = new FileChooser();
     private double downloadProgress = 0;
     private selectedData selected = null;
 
@@ -92,6 +111,7 @@ public class settingsDialog implements Runnable{
         private String degreeProgrammeId;
         private String studyModuleName;
         private String studyModuleId;
+        private List<String> completedCourses;
         /**
          * Default Constructor to generate the structure
          * @param studName StudentName
@@ -111,6 +131,19 @@ public class settingsDialog implements Runnable{
             this.studyModuleId = studyModuleId;
             this.studyModuleName = studyModuleName;
         }
+
+        private selectedData(String studName, String studNumber, String degreeProgrammeName,
+         String degreeProgrammeId, String studyModuleName, String studyModuleId, List<String> completedCourses){
+
+            this.studName = studName;
+            this.studNumber = studNumber;
+            this.degreeProgrammeId = degreeProgrammeId;
+            this.degreeProgrammeName = degreeProgrammeName;
+            this.studyModuleId = studyModuleId;
+            this.studyModuleName = studyModuleName;
+            this.completedCourses = completedCourses;
+        }
+
         /**
          * Get DegreeProgrammeId
          * @return String DegreeProgrammeId
@@ -153,6 +186,10 @@ public class settingsDialog implements Runnable{
         public String getStudyModuleName() {
             return studyModuleName;
         }
+
+        public List<String> getCompletedCourses() {
+            return completedCourses;
+        }
         
     }
     /**
@@ -169,17 +206,20 @@ public class settingsDialog implements Runnable{
         this.mainStage = mainStage;
         nameField.setPrefSize(200, 50);
         confirmButton.setPrefSize(100, 50);
+        selectFileButton.setPrefSize(100, 50);
         studentNumber.setMinSize(200, 50);
         degreeProgramsList.setPrefSize(400, 200);
         loadingBar.setPrefWidth(400);
         studentNumber.setText("Enter student number");
         nameField.setText("Enter name");
         confirmButton.setText("Confirm");
+        selectFileButton.setText("Select file");
         settingsGrid.add(nameField, 0, 0, 1, 1);
         settingsGrid.add(studentNumber, 0, 1,1, 1);
         settingsGrid.add(degreeProgramsList, 2, 0, 1, 3);
         settingsGrid.add(confirmButton, 0,2, 1 ,1);
         settingsGrid.add(loadingBar, 2, 4, 3, 1);
+        settingsGrid.add(selectFileButton, 0, 3, 1, 1);
         confirmButton.setAlignment(Pos.CENTER);
         settingsScene = new Scene(settingsGrid);
         
@@ -196,7 +236,7 @@ public class settingsDialog implements Runnable{
                 TreeItem<treeItems> studyModule = degreeProgramsList.getSelectionModel().getSelectedItem();
                 if(!studyModule.getValue().getIsLeaf() && !studyModule.getValue().hasNoStudyModules){
                     errorLabel.setText("Please choose a Study plan");
-                    settingsGrid.add(errorLabel, 0, 3,1,1);
+                    settingsGrid.add(errorLabel, 0, 4,1,1);
                     return;
                 }
                 else if (studyModule.getValue().gethasNoStudyModules() && !studyModule.getValue().getIsLeaf()){
@@ -214,7 +254,32 @@ public class settingsDialog implements Runnable{
                 
             }
         });
-    } 
+        
+        selectFileButton.setOnAction(event -> {
+            selectedData data;
+            File file = fileChooser.showOpenDialog(mainStage);
+            if (file != null) {
+                if (file.getName().contains("json")) {
+                    try (Scanner myReader = new Scanner(file)) {
+                        Gson gson = new Gson();
+                        ToJsonFileClass studentData = gson.fromJson(new FileReader(file), ToJsonFileClass.class);
+                        if (studentData.getType().equals("degreeProgramme")) {
+                            data = new selectedData(studentData.getStudentName(), studentData.getStudentNumber(), "", studentData.getDegreeGroupId(),
+                            "", "", studentData.getCoursesGroupIds());
+                        } else {
+                            data = new selectedData(studentData.getStudentName(), studentData.getStudentNumber(), "No DegreeProgramme", "No DegreeProgramme",
+                            "", studentData.getDegreeGroupId(), studentData.getCoursesGroupIds());
+                        }
+                        setSelectedData(data);
+                        mainStage.setScene(mainScene);
+                    } catch (FileNotFoundException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+     
     /**
      * Returns the settings selected by user. CAN BE NULL if no data had been selected
      * @return selectedData class structure that contain Strings of the selected items.

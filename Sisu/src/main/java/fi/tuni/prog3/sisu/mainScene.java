@@ -22,6 +22,8 @@ import java.util.TreeSet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import fi.tuni.prog3.sisu.settingsDialog.selectedData;
+
 
 /**
  * Class representing mainscene which is opened after settings scene. 
@@ -32,6 +34,7 @@ public class mainScene implements Runnable {
     private TreeView<treeItems> degreeProgram =new TreeView<treeItems>();
     private settingsDialog.selectedData selected;
     private settingsDialog settings;
+    private TreeSet<String> listOfCompletedCourses = new TreeSet<>();
 
     /**
      * This is used to get all modules and courses under the selected degree in settingsDialog and added to treeview
@@ -106,7 +109,7 @@ public class mainScene implements Runnable {
 
                 addSubModules(branch, module.getWhenSubModuleAreModules());
 
-                //getSubCourses(branch, module.getWhenSubModuleAreCourses());
+                getSubCourses(branch, module.getWhenSubModuleAreCourses());
             }
 
             // Only submodules under branch
@@ -122,7 +125,7 @@ public class mainScene implements Runnable {
                 branch.setValue(new treeItems(module.getName().get("fi"), module.getId(), false, false, true, module));
                 root.getChildren().add(branch);
 
-                //getSubCourses(branch, module.getWhenSubModuleAreCourses());
+                getSubCourses(branch, module.getWhenSubModuleAreCourses());
             }
         }
     }
@@ -136,9 +139,13 @@ public class mainScene implements Runnable {
 
         for ( var course : courses.values() ){
             TreeItem<treeItems> branch = new TreeItem<treeItems>();
-
-            branch.setValue(new treeItems(course.getName().get("fi"), course.getCode(), true, true, false));
-            root.getChildren().add(branch);
+            if (selected.getCompletedCourses() != null && selected.getCompletedCourses().contains(course.getGroupId())) {
+                course.setCompleted(true);
+                course.setTreeItem(branch);
+                branch.setValue(new treeItems("%: " + course.getName().get("fi"), course.getCode(), true, true, false));
+                root.getChildren().add(branch);
+                listOfCompletedCourses.add(course.getGroupId());
+            }
         }
     }
 
@@ -147,7 +154,7 @@ public class mainScene implements Runnable {
      * @param mainStage Both scenes are used in this stage
      */
     public mainScene(Stage mainStage){
-        TreeSet<String> listOfCompletedCourses = new TreeSet<>();
+        
         degreeProgram.setMinWidth(400);
 
         this.stage = mainStage;
@@ -202,10 +209,10 @@ public class mainScene implements Runnable {
             List<String> tempList = new ArrayList<>(listOfCompletedCourses);
             if (selected.getDegreeProgrammeName().equals("No DegreeProgramme")) {
                 temp = new ToJsonFileClass(selected.getStudName(), selected.getStudNumber(), 
-                selected.getStudyModuleId(), tempList);
+                selected.getStudyModuleId(), tempList, "studyModule");
             } else {
                 temp = new ToJsonFileClass(selected.getStudName(), selected.getStudNumber(), 
-                selected.getDegreeProgrammeId(), tempList);
+                selected.getDegreeProgrammeId(), tempList, "degreeProgramme");
             }
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             try {

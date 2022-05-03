@@ -1,0 +1,12 @@
+{
+    "studentName": "testi1",
+    "studentNumber": "degreeProgramme_example",
+    "degreeGroupId": "otm-872015a5-14ce-46a4-a1e1-1932c975a856",
+    "type": "degreeProgramme",
+    "coursesGroupIds": [
+        "otm-5fcf8ee9-d962-44e3-bc11-02ca19970750",
+        "otm-b0966cc1-b8ae-41d8-8b61-770bad2e77ad",
+        "otm-bb04464c-1627-4a21-b55e-b7bf829100f3",
+        "otm-f73647d0-b025-4c84-93a2-fc6981ebead4"
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "studentName": "Testi",
+    "studentNumber": "studyModule_example",
+    "degreeGroupId": "uta-tohjelma-1773",
+    "type": "studyModule",
+    "coursesGroupIds": [
+        "otm-868fb7bd-9cd5-4e0a-81ac-4f3fd81375f1",
+        "otm-8acb6c23-6970-414b-a682-268d5debf556",
+        "otm-d3d29504-a8a3-4b17-8846-1d5068e2d2ba",
+        "otm-d6c4673e-33a1-4629-aee5-7a6bc77d2bbf",
+        "otm-e3f7d37a-90cc-4c71-a151-2a9ed16c6378",
+        "uta-ykoodi-40849",
+        "uta-ykoodi-40857"
+    ]
+}

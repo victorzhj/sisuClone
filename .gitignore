@@ -3,4 +3,3 @@ target/
 *.jar
 .gitignore
 .vscode
-.json

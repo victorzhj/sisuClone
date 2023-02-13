@@ -1,9 +1,9 @@
-# Programming 3 project template
+# Clone of Sisu
 
-Make sure you have setup ssh-key for your GitLab account.
+This software is a project for Programming 3: Interfaces and Techniques COMP.CS.140 course.
 
-Some example JSON files are under the `json` subdirectory. The file `json/modules/otm-3990be25-c9fd-4dae-904c-547ac11e8302.json` is a root level `DegreeProgramme` module.
+I was responsible for Json parsing, creading json files and saving the user data to a json file. I was also responsible for showing the actual information of courses and made them selectable. I also helped with how the courses are shown in the left side of the program.
 
-Note! The .gitlab-ci.yml is offline at the moment.
+The software is used to get the data of all the courses that Tampere University has to offer. Depending on what degree is chosen, the program will show the possible courses for that degree program. 
 
-# You are allowed (and probably should) make changes to this file after you have started your project. :)
+When opening the software user can load their previous data from json file if they have it already. If no file is inputted the first window that the user is greeted with will ask the user to choose a degree program. After that it will show the courses of that progam and user can choose if they have complited its courses or not. Upon closing the program it will create a Json file with user information of that session.
